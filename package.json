@@ -6,7 +6,7 @@
     ".": "./src/index.ts",
     "./math": "./src/math/index.ts",
     "./theme": "./src/theme/index.ts",
-    "./render/server": "./src/render/server.tsx",
+    "./render/server": "./src/render/server.ts",
     "./render/client": "./src/render/client.tsx"
   },
   "scripts": {

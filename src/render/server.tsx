@@ -1,3 +1,1 @@
-export function renderToSvgString(): string {
-  return "<svg></svg>";
-}
+export * from "./server.ts";
