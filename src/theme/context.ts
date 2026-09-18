@@ -53,3 +53,15 @@ export function resolveTone(tone: Tone | string | undefined, theme: FigureTheme)
       return tone;
   }
 }
+
+export function resolveFontSize(
+  size: number | import("./types.ts").TextRole | undefined,
+  defaultRole: import("./types.ts").TextRole,
+  theme: FigureTheme
+): number {
+  if (typeof size === "number") return size;
+  if (typeof size === "string" && size in theme.text) {
+    return theme.text[size as import("./types.ts").TextRole];
+  }
+  return theme.text[defaultRole];
+}

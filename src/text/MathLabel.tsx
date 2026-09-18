@@ -2,7 +2,7 @@ import React, { type CSSProperties } from "react";
 import { texToSvg } from "./tex.ts";
 import { computeBoxOffset, type Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
-import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
+import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
 
 export interface MathLabelProps {
   tex: string;
@@ -12,7 +12,8 @@ export interface MathLabelProps {
   anchor?: Anchor;
   offset?: [number, number];
   tone?: Tone | string;
-  fontSize?: number;
+  fontSize?: number | TextRole;
+  size?: number | TextRole;
   display?: boolean;
   allowOverlap?: boolean;
   style?: CSSProperties;
@@ -28,6 +29,7 @@ export function MathLabel({
   offset = [0, 0],
   tone = "ink",
   fontSize,
+  size: propSize,
   display = false,
   allowOverlap = false,
   style,
@@ -36,7 +38,7 @@ export function MathLabel({
   const theme = useTheme();
   const frame = useFrameSafe();
 
-  const size = fontSize ?? theme.text.math;
+  const size = resolveFontSize(propSize ?? fontSize, "math", theme);
   const toneColor = resolveTone(tone, theme);
 
   let targetX = x ?? 0;

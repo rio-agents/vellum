@@ -16,3 +16,4 @@ export * from "./Polygon.tsx";
 export * from "./Region.tsx";
 export * from "./Legend.tsx";
 export * from "./Callout.tsx";
+export * from "./Table.tsx";

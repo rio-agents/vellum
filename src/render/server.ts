@@ -5,6 +5,8 @@ import { defaultTheme } from "../theme/default-theme.ts";
 import type { FigureTheme } from "../theme/types.ts";
 import type { FigureDefinition } from "../define.ts";
 
+import { FigureDefinitionContext } from "../scene/Figure.tsx";
+
 export interface RenderServerOptions {
   theme?: FigureTheme;
   params?: Record<string, any>;
@@ -37,7 +39,11 @@ export function renderToSvgString(
     time,
   });
 
-  const wrapped = React.createElement(ThemeProvider, { theme }, element);
+  const wrapped = React.createElement(
+    FigureDefinitionContext.Provider,
+    { value: definition },
+    React.createElement(ThemeProvider, { theme }, element)
+  );
 
   let svg = renderToStaticMarkup(wrapped);
 

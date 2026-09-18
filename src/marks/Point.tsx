@@ -1,5 +1,5 @@
 import React from "react";
-import { useFrame } from "../scene/frame-context.ts";
+import { useFrameSafe } from "../scene/frame-context.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, type Weight } from "./style-helpers.ts";
 import { Label } from "../text/Label.tsx";
@@ -35,10 +35,10 @@ export function Point({
   labelOffset = [10, 0],
   className,
 }: PointProps) {
-  const frame = useFrame();
+  const frame = useFrameSafe();
   const theme = useTheme();
 
-  const [px, py] = frame.toPx(at);
+  const [px, py] = frame ? frame.toPx(at) : at;
 
   const fillColor = fill ?? resolveTone(tone, theme);
   const strokeColor = stroke ?? resolveTone(strokeTone, theme);

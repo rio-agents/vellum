@@ -1,5 +1,6 @@
 export interface FigureDefinition<P = Record<string, any>, D = Record<string, any>> {
   id: string;
+  title?: string;
   description: string;
   size: { width: number; height: number };
   params?: P;

@@ -1,11 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
-import os from "node:os";
 import { pathToFileURL } from "node:url";
-import { readdir, readFile, mkdir, rm } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import * as esbuild from "esbuild";
-import { renderToSvgString } from "../src/render/server.ts";
+import { renderToSvgString } from "@webnotes/figures/render/server";
 import { siteTheme } from "../../../src/lib/figures/site-theme.ts";
 
 const root = process.cwd();
@@ -36,8 +35,7 @@ test("Figures determinism check: in-memory render matches committed SVG", async 
   try {
     for (const filePath of files) {
       const fileId = path.basename(filePath).replace(/\.figure\.tsx$/, "");
-      const tempBundle = path.join(tempDir, `${fileId}-${Date.now()}.mjs`);
-
+      const tempBundle = path.join(tempDir, `${fileId}.bundle.mjs`);
       await esbuild.build({
         entryPoints: [filePath],
         bundle: true,
@@ -50,12 +48,13 @@ test("Figures determinism check: in-memory render matches committed SVG", async 
           "react-dom/*",
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
+          "@webnotes/figures",
+          "@webnotes/figures/*",
         ],
       });
 
       const mod = await import(`${pathToFileURL(tempBundle).href}?t=${Date.now()}`);
       const def = mod.default;
-
       const rendered = renderToSvgString(def, { theme: siteTheme }) + "\n";
       const committedPath = path.join(assetsDir, `${def.id}.svg`);
 
@@ -80,5 +79,65 @@ test("Figures determinism check: in-memory render matches committed SVG", async 
     stale.length,
     0,
     `Stale figure SVG(s): ${stale.join(", ")}. Run 'pnpm figures:render' to update committed SVGs.`
+  );
+});
+
+test("Figures theme test: no un-themed literal colors in committed SVGs", async () => {
+  const entries = await readdir(assetsDir);
+  const svgFiles = entries.filter((f) => f.endsWith(".svg")).sort();
+
+  assert.ok(svgFiles.length > 0, "No SVG figures found in assets/figures");
+
+  const errors: string[] = [];
+
+  for (const svgFile of svgFiles) {
+    const content = await readFile(path.join(assetsDir, svgFile), "utf8");
+
+    // Match attribute colors: fill="...", stroke="...", stop-color="..."
+    const attrRegex = /\b(fill|stroke|stop-color)="([^"]+)"/g;
+    let match: RegExpExecArray | null;
+
+    while ((match = attrRegex.exec(content)) !== null) {
+      const [, attr, val] = match;
+      const trimmed = val.trim();
+      if (
+        trimmed === "none" ||
+        trimmed === "transparent" ||
+        trimmed === "currentColor" ||
+        trimmed.startsWith("url(") ||
+        trimmed.startsWith("var(")
+      ) {
+        continue;
+      }
+      errors.push(`${svgFile}: attribute ${attr}="${trimmed}" has literal color without var()`);
+    }
+
+    // Match style colors: style="...color: ...; fill: ...; stroke: ..."
+    const styleAttrRegex = /style="([^"]+)"/g;
+    while ((match = styleAttrRegex.exec(content)) !== null) {
+      const styleContent = match[1];
+      const propRegex = /(?:^|;)\s*(color|fill|stroke)\s*:\s*([^;]+)/g;
+      let propMatch: RegExpExecArray | null;
+      while ((propMatch = propRegex.exec(styleContent)) !== null) {
+        const [, prop, val] = propMatch;
+        const trimmed = val.trim();
+        if (
+          trimmed === "none" ||
+          trimmed === "transparent" ||
+          trimmed === "currentColor" ||
+          trimmed.startsWith("url(") ||
+          trimmed.startsWith("var(")
+        ) {
+          continue;
+        }
+        errors.push(`${svgFile}: style property ${prop}: ${trimmed} has literal color without var()`);
+      }
+    }
+  }
+
+  assert.equal(
+    errors.length,
+    0,
+    `Committed SVGs contain un-themed literal colors:\n${errors.join("\n")}`
   );
 });

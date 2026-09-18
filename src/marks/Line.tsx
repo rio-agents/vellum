@@ -1,5 +1,5 @@
 import React from "react";
-import { useFrame } from "../scene/frame-context.ts";
+import { useFrameSafe } from "../scene/frame-context.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-helpers.ts";
 import { clipLineToBox } from "../math/geometry.ts";
@@ -31,51 +31,69 @@ export function Line({
   opacity,
   className,
 }: LineProps) {
-  const frame = useFrame();
+  const frame = useFrameSafe();
   const theme = useTheme();
 
   const strokeColor = resolveTone(tone, theme);
   const strokeWidth = resolveWeight(weight, theme);
   const strokeDasharray = resolveDash(dash);
 
-  const { toPx, xDomain, yDomain } = frame;
+  let x1: number;
+  let y1: number;
+  let x2: number;
+  let y2: number;
 
-  let startPt: [number, number];
-  let endPt: [number, number];
+  if (frame) {
+    const { toPx, xDomain, yDomain } = frame;
+    let startPt: [number, number];
+    let endPt: [number, number];
 
-  if (from && to) {
-    startPt = from;
-    endPt = to;
-  } else if (point && direction) {
-    const box = {
-      xMin: Math.min(xDomain[0], xDomain[1]),
-      xMax: Math.max(xDomain[0], xDomain[1]),
-      yMin: Math.min(yDomain[0], yDomain[1]),
-      yMax: Math.max(yDomain[0], yDomain[1]),
-    };
-    const clipped = clipLineToBox(point, direction, box);
-    if (!clipped) return null;
-    startPt = clipped[0];
-    endPt = clipped[1];
-  } else if (slope !== undefined) {
-    const pt: [number, number] = [0, intercept];
-    const dir: [number, number] = [1, slope];
-    const box = {
-      xMin: Math.min(xDomain[0], xDomain[1]),
-      xMax: Math.max(xDomain[0], xDomain[1]),
-      yMin: Math.min(yDomain[0], yDomain[1]),
-      yMax: Math.max(yDomain[0], yDomain[1]),
-    };
-    const clipped = clipLineToBox(pt, dir, box);
-    if (!clipped) return null;
-    startPt = clipped[0];
-    endPt = clipped[1];
+    if (from && to) {
+      startPt = from;
+      endPt = to;
+    } else if (point && direction) {
+      const box = {
+        xMin: Math.min(xDomain[0], xDomain[1]),
+        xMax: Math.max(xDomain[0], xDomain[1]),
+        yMin: Math.min(yDomain[0], yDomain[1]),
+        yMax: Math.max(yDomain[0], yDomain[1]),
+      };
+      const clipped = clipLineToBox(point, direction, box);
+      if (!clipped) return null;
+      startPt = clipped[0];
+      endPt = clipped[1];
+    } else if (slope !== undefined) {
+      const pt: [number, number] = [0, intercept];
+      const dir: [number, number] = [1, slope];
+      const box = {
+        xMin: Math.min(xDomain[0], xDomain[1]),
+        xMax: Math.max(xDomain[0], xDomain[1]),
+        yMin: Math.min(yDomain[0], yDomain[1]),
+        yMax: Math.max(yDomain[0], yDomain[1]),
+      };
+      const clipped = clipLineToBox(pt, dir, box);
+      if (!clipped) return null;
+      startPt = clipped[0];
+      endPt = clipped[1];
+    } else {
+      return null;
+    }
+    const p1 = toPx(startPt);
+    const p2 = toPx(endPt);
+    x1 = p1[0];
+    y1 = p1[1];
+    x2 = p2[0];
+    y2 = p2[1];
   } else {
-    return null;
+    if (from && to) {
+      x1 = from[0];
+      y1 = from[1];
+      x2 = to[0];
+      y2 = to[1];
+    } else {
+      return null;
+    }
   }
-
-  const [x1, y1] = toPx(startPt);
-  const [x2, y2] = toPx(endPt);
 
   return (
     <line

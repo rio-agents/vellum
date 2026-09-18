@@ -13,6 +13,19 @@ export interface FigureProps {
   style?: CSSProperties;
 }
 
+export interface FigureDefinitionContextValue {
+  id?: string;
+  title?: string;
+  description?: string;
+  size?: { width: number; height: number };
+}
+
+export const FigureDefinitionContext = createContext<FigureDefinitionContextValue>({});
+
+export function useFigureDefinition(): FigureDefinitionContextValue {
+  return useContext(FigureDefinitionContext);
+}
+
 interface FigureContextValue {
   id: string;
   width: number;
@@ -30,19 +43,25 @@ export function useFigureContext(): FigureContextValue {
 }
 
 export function Figure({
-  id = "figure",
-  title,
-  eyebrow,
-  description,
-  size = { width: 720, height: 460 },
+  id: propId,
+  title: propTitle,
+  eyebrow: propEyebrow,
+  description: propDescription,
+  size: propSize,
   children,
   className,
   style,
 }: FigureProps) {
+  const def = useFigureDefinition();
   const theme = useTheme();
+
+  const id = propId ?? def.id ?? "figure";
+  const title = propTitle ?? def.title;
+  const description = propDescription ?? def.description;
+  const size = propSize ?? def.size ?? { width: 720, height: 460 };
   const { width, height } = size;
 
-  const headerText = eyebrow ?? title;
+  const headerText = propEyebrow ?? title;
 
   return (
     <FigureContext.Provider value={{ id, width, height }}>

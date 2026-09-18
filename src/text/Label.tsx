@@ -1,7 +1,7 @@
 import React, { type CSSProperties } from "react";
 import type { Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
-import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
+import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
 
 export interface LabelProps {
   text: string;
@@ -11,7 +11,8 @@ export interface LabelProps {
   anchor?: Anchor;
   offset?: [number, number];
   tone?: Tone | string;
-  fontSize?: number;
+  fontSize?: number | TextRole;
+  size?: number | TextRole;
   fontFamily?: string;
   fontWeight?: number | string;
   letterSpacing?: number | string;
@@ -31,14 +32,17 @@ function anchorToSvgAlignment(anchor: Anchor): {
     case "w":
     case "nw":
     case "sw":
+    case "start":
       textAnchor = "start";
       break;
     case "e":
     case "ne":
     case "se":
+    case "end":
       textAnchor = "end";
       break;
     case "center":
+    case "middle":
     case "n":
     case "s":
       textAnchor = "middle";
@@ -75,6 +79,7 @@ export function Label({
   offset = [0, 0],
   tone = "ink",
   fontSize,
+  size: propSize,
   fontFamily,
   fontWeight,
   letterSpacing,
@@ -85,7 +90,7 @@ export function Label({
   const theme = useTheme();
   const frame = useFrameSafe();
 
-  const size = fontSize ?? theme.text.label;
+  const finalSize = resolveFontSize(propSize ?? fontSize, "label", theme);
   const toneColor = resolveTone(tone, theme);
   const face = fontFamily ?? theme.font.sans;
 
@@ -125,7 +130,7 @@ export function Label({
       textAnchor={textAnchor}
       dominantBaseline={dominantBaseline}
       fill={toneColor}
-      fontSize={size}
+      fontSize={finalSize}
       fontFamily={face}
       fontWeight={fontWeight}
       letterSpacing={letterSpacing}

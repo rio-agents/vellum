@@ -38,6 +38,8 @@ export interface FigureTheme {
   };
 }
 
+export type TextRole = keyof FigureTheme["text"];
+
 export type Tone =
   | "ink"
   | "muted"

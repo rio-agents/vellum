@@ -1,5 +1,4 @@
-import React from "react";
-import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
+import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
 import { resolveDash, type Dash } from "./style-helpers.ts";
 import { Label } from "../text/Label.tsx";
 
@@ -16,7 +15,7 @@ export interface LegendProps {
   y: number;
   lineLength?: number;
   gap?: number;
-  fontSize?: number;
+  fontSize?: number | TextRole;
   className?: string;
 }
 
@@ -30,7 +29,7 @@ export function Legend({
   className,
 }: LegendProps) {
   const theme = useTheme();
-  const size = fontSize ?? theme.text.label;
+  const size = resolveFontSize(fontSize, "label", theme);
 
   return (
     <g className={`webnotes-legend ${className ?? ""}`.trim()}>

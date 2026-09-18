@@ -1,5 +1,5 @@
 import React from "react";
-import { useFrame } from "../scene/frame-context.ts";
+import { useFrameSafe } from "../scene/frame-context.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-helpers.ts";
 import { getArrowMarkerUrl } from "./markers.tsx";
@@ -27,15 +27,15 @@ export function Arrow({
   markerEnd = true,
   className,
 }: ArrowProps) {
-  const frame = useFrame();
+  const frame = useFrameSafe();
   const theme = useTheme();
 
   const strokeColor = resolveTone(tone, theme);
   const strokeWidth = resolveWeight(weight, theme);
   const strokeDasharray = resolveDash(dash);
 
-  const [x1, y1] = frame.toPx(from);
-  const [x2, y2] = frame.toPx(to);
+  const [x1, y1] = frame ? frame.toPx(from) : from;
+  const [x2, y2] = frame ? frame.toPx(to) : to;
 
   const markerUrl = getArrowMarkerUrl(tone);
 
