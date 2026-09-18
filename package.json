@@ -1,0 +1,30 @@
+{
+  "name": "@webnotes/figures",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./math": "./src/math/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./render/server": "./src/render/server.tsx",
+    "./render/client": "./src/render/client.tsx"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/**/*.test.ts"
+  },
+  "dependencies": {
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
+    "mathjax-full": "^3.2.2"
+  },
+  "devDependencies": {
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-shape": "^3.2.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
