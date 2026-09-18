@@ -1,2 +1,3 @@
-// Theme exports (implemented in Phase 1)
-export const THEME_VERSION = "0.0.1";
+export * from "./types.ts";
+export * from "./default-theme.ts";
+export * from "./context.ts";

@@ -1,2 +1,5 @@
-// Math core exports (implemented in Phase 1)
-export const MATH_CORE_VERSION = "0.0.1";
+export * from "./scale.ts";
+export * from "./random.ts";
+export * from "./distributions.ts";
+export * from "./linalg.ts";
+export * from "./geometry.ts";
