@@ -1,2 +1,2 @@
-export * from "./server.ts";
+export type { RenderServerOptions } from "./server.ts";
 export * from "./client.tsx";

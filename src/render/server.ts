@@ -6,6 +6,10 @@ import type { FigureTheme } from "../theme/types.ts";
 import type { FigureDefinition } from "../define.ts";
 import type { AnyParamConfig } from "../params/types.ts";
 import { FigureDefinitionContext } from "../scene/Figure.tsx";
+import { texToSvg } from "../text/tex.ts";
+import { registerSyncTexResolver, makeCacheKey } from "../text/tex-resolver.ts";
+
+registerSyncTexResolver(texToSvg);
 
 export interface RenderServerOptions {
   theme?: FigureTheme;
@@ -41,6 +45,39 @@ export function renderToSvgString(
     time: typeof time === "number" ? time : 0,
   });
 
+  // Pre-render parameter TeX labels into hidden defs so client can harvest without loading MathJax
+  const paramDefs: React.ReactNode[] = [];
+  if (definition.params) {
+    for (const [key, p] of Object.entries(definition.params as Record<string, AnyParamConfig>)) {
+      if (p.label && p.labelKind !== "text") {
+        try {
+          const math = texToSvg(p.label);
+          paramDefs.push(
+            React.createElement(
+              "g",
+              {
+                key: `param-math-${key}`,
+                className: "webnotes-math-label",
+                "data-label-text": p.label,
+                "data-width-em": math.widthEm,
+                "data-height-em": math.heightEm,
+                style: { display: "none" },
+              },
+              React.createElement("svg", {
+                viewBox: math.viewBox,
+                width: math.widthEm * 14,
+                height: math.heightEm * 14,
+                dangerouslySetInnerHTML: { __html: math.inner },
+              })
+            )
+          );
+        } catch {
+          // Ignore invalid TeX during defs generation
+        }
+      }
+    }
+  }
+
   const wrapped = React.createElement(
     FigureDefinitionContext.Provider,
     { value: definition },
@@ -48,6 +85,13 @@ export function renderToSvgString(
   );
 
   let svg = renderToStaticMarkup(wrapped);
+
+  if (paramDefs.length > 0) {
+    const defsString = renderToStaticMarkup(
+      React.createElement("defs", { className: "webnotes-figure-param-defs" }, ...paramDefs)
+    );
+    svg = svg.replace("</svg>", `${defsString}</svg>`);
+  }
 
   if (!svg.includes('xmlns="http://www.w3.org/2000/svg"')) {
     svg = svg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');

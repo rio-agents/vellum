@@ -1,7 +1,7 @@
 export type ParamKind = "number" | "boolean" | "choice" | "point" | "time";
 
 export interface BaseParamConfig<T = unknown> {
-  type?: ParamKind | string;
+  type: ParamKind;
   default: T;
   label?: string;
   labelKind?: "tex" | "text";
@@ -9,7 +9,7 @@ export interface BaseParamConfig<T = unknown> {
 }
 
 export interface NumberParamConfig extends BaseParamConfig<number> {
-  type?: "number";
+  type: "number";
   min?: number;
   max?: number;
   step?: number;
@@ -17,7 +17,7 @@ export interface NumberParamConfig extends BaseParamConfig<number> {
 }
 
 export interface BooleanParamConfig extends BaseParamConfig<boolean> {
-  type?: "boolean";
+  type: "boolean";
 }
 
 export interface ChoiceOption<T extends string = string> {
@@ -26,17 +26,17 @@ export interface ChoiceOption<T extends string = string> {
 }
 
 export interface ChoiceParamConfig<T extends string = string> extends BaseParamConfig<T> {
-  type?: "choice";
-  options: ChoiceOption<T>[];
+  type: "choice";
+  options: ChoiceOption<T>[] | readonly ChoiceOption<T>[];
 }
 
 export interface PointParamConfig extends BaseParamConfig<[number, number]> {
-  type?: "point";
+  type: "point";
   bounds?: { x?: [number, number]; y?: [number, number] };
 }
 
 export interface TimeParamConfig extends BaseParamConfig<number> {
-  type?: "time";
+  type: "time";
   duration?: number;
   loop?: boolean;
 }
@@ -46,12 +46,24 @@ export type AnyParamConfig =
   | BooleanParamConfig
   | ChoiceParamConfig<any>
   | PointParamConfig
-  | TimeParamConfig
-  | BaseParamConfig<any>;
+  | TimeParamConfig;
 
 export type FigureParamsSchema = Record<string, AnyParamConfig>;
 
-export type InferParamValue<P> = P extends { default: infer V } ? V : unknown;
+export type InferParamValue<P> =
+  P extends ChoiceParamConfig<infer T>
+    ? T
+    : P extends PointParamConfig
+      ? [number, number]
+      : P extends NumberParamConfig
+        ? number
+        : P extends BooleanParamConfig
+          ? boolean
+          : P extends TimeParamConfig
+            ? number
+            : P extends { default: infer V }
+              ? V
+              : unknown;
 
 export type InferParamsValues<P extends FigureParamsSchema> = {
   [K in keyof P]: InferParamValue<P[K]>;

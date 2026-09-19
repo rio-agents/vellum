@@ -1,5 +1,6 @@
-import React, { type CSSProperties } from "react";
-import { texToSvg } from "./tex.ts";
+import React, { type CSSProperties, useState, useEffect } from "react";
+import { resolveTex, loadClientTex } from "./tex-resolver.ts";
+import type { TexSvgResult } from "./tex.ts";
 import { computeBoxOffset, type Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
 import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
@@ -38,6 +39,19 @@ export function MathLabel({
   const theme = useTheme();
   const frame = useFrameSafe();
 
+  const [clientMath, setClientMath] = useState<TexSvgResult | null>(null);
+
+  const initialMath = resolveTex(tex, { display });
+  const math = initialMath ?? clientMath;
+
+  useEffect(() => {
+    if (!initialMath) {
+      loadClientTex(tex, { display })
+        .then((res) => setClientMath(res))
+        .catch((err) => console.error(`Failed to load MathJax for tex: "${tex}"`, err));
+    }
+  }, [tex, display, initialMath]);
+
   const size = resolveFontSize(propSize ?? fontSize, "math", theme);
   const toneColor = resolveTone(tone, theme);
 
@@ -54,18 +68,27 @@ export function MathLabel({
       targetY = at[1];
     }
   } else if (frame && x !== undefined && y !== undefined) {
-    // If x and y were passed directly in panel
-    // Usually x,y are in pixels or data coords; if in panel without `at`, treat as data coords if non-zero
     const [px, py] = frame.toPx([x, y]);
     targetX = px;
     targetY = py;
   }
 
-  // Add pixel offset
   targetX += offset[0];
   targetY += offset[1];
 
-  const math = texToSvg(tex, { display });
+  if (!math) {
+    return (
+      <g
+        className={`webnotes-math-label ${className ?? ""}`.trim()}
+        data-label-text={tex}
+        data-display={display ? "true" : undefined}
+        data-allow-overlap={allowOverlap ? "true" : undefined}
+        transform={`translate(${targetX.toFixed(2)}, ${targetY.toFixed(2)})`}
+        style={{ color: toneColor, fill: "currentColor", ...style }}
+      />
+    );
+  }
+
   const widthPx = math.widthEm * size;
   const heightPx = math.heightEm * size;
 
