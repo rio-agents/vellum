@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { readdir, readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import * as esbuild from "esbuild";
 
-const root = process.cwd();
+const root = process.cwd().endsWith("packages/figures") ? path.resolve(process.cwd(), "../..") : process.cwd();
 const figuresDir = path.join(root, "src/figures");
 const assetsDir = path.join(root, "notebook/assets/figures");
 const siteThemePath = path.join(root, "src/lib/figures/site-theme.ts");

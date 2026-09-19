@@ -5,3 +5,6 @@ export * from "./text/index.ts";
 export * from "./scene/index.ts";
 export * from "./marks/index.ts";
 export * from "./render/index.ts";
+export * from "./params/index.ts";
+export * from "./controls/index.ts";
+export * from "./animate/index.ts";

@@ -1,1 +1,1 @@
-export const PARAMS_VERSION = "0.0.1";
+export type * from "./types.ts";

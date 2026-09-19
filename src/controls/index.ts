@@ -1,1 +1,1 @@
-export const CONTROLS_VERSION = "0.0.1";
+export type { FigureControlsConfig } from "../define.ts";
