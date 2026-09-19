@@ -3,34 +3,13 @@
   "version": "0.0.1",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    },
-    "./math": {
-      "types": "./src/math/index.ts",
-      "import": "./dist/math.js",
-      "default": "./dist/math.js"
-    },
-    "./theme": {
-      "types": "./src/theme/index.ts",
-      "import": "./dist/theme.js",
-      "default": "./dist/theme.js"
-    },
-    "./render/server": {
-      "types": "./src/render/server.ts",
-      "import": "./dist/render/server.js",
-      "default": "./dist/render/server.js"
-    },
-    "./render/client": {
-      "types": "./src/render/client.tsx",
-      "import": "./dist/render/client.js",
-      "default": "./dist/render/client.js"
-    }
+    ".": "./src/index.ts",
+    "./math": "./src/math/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./render/server": "./src/render/server.ts",
+    "./render/client": "./src/render/client.tsx"
   },
   "scripts": {
-    "build": "node build.mjs",
     "test": "node --experimental-strip-types --test test/**/*.test.ts"
   },
   "dependencies": {

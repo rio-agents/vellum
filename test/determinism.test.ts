@@ -4,12 +4,11 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { readdir, readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import * as esbuild from "esbuild";
-import { renderToSvgString } from "@webnotes/figures/render/server";
-import { siteTheme } from "../../../src/lib/figures/site-theme.ts";
 
 const root = process.cwd();
 const figuresDir = path.join(root, "src/figures");
 const assetsDir = path.join(root, "notebook/assets/figures");
+const siteThemePath = path.join(root, "src/lib/figures/site-theme.ts");
 
 async function findFigureFiles(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true, recursive: true });
@@ -36,8 +35,24 @@ test("Figures determinism check: in-memory render matches committed SVG", async 
     for (const filePath of files) {
       const fileId = path.basename(filePath).replace(/\.figure\.tsx$/, "");
       const tempBundle = path.join(tempDir, `${fileId}.bundle.mjs`);
+
+      const entryContent = [
+        `import figureDef from ${JSON.stringify(filePath)};`,
+        `import { renderToSvgString } from "@webnotes/figures/render/server";`,
+        `import { siteTheme } from ${JSON.stringify(siteThemePath)};`,
+        `export const definition = figureDef?.default ?? figureDef;`,
+        `export function render() {`,
+        `  return renderToSvgString(definition, { theme: siteTheme });`,
+        `}`,
+      ].join("\n");
+
       await esbuild.build({
-        entryPoints: [filePath],
+        stdin: {
+          contents: entryContent,
+          resolveDir: root,
+          loader: "ts",
+          sourcefile: `virtual-${fileId}-entry.ts`,
+        },
         bundle: true,
         platform: "node",
         format: "esm",
@@ -48,14 +63,12 @@ test("Figures determinism check: in-memory render matches committed SVG", async 
           "react-dom/*",
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
-          "@webnotes/figures",
-          "@webnotes/figures/*",
         ],
       });
 
       const mod = await import(`${pathToFileURL(tempBundle).href}?t=${Date.now()}`);
-      const def = mod.default;
-      const rendered = renderToSvgString(def, { theme: siteTheme }) + "\n";
+      const def = mod.definition;
+      const rendered = mod.render() + "\n";
       const committedPath = path.join(assetsDir, `${def.id}.svg`);
 
       let committed: string | null = null;
