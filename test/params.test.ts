@@ -128,3 +128,82 @@ test("defineFigure parameter types flow into derive and render", () => {
   const d = def.derive?.({ s1: 2, tag: "second", pos: [3, 4] });
   assert.deepEqual(d, { s1Sq: 4, tagUpper: "SECOND", dist: 5 });
 });
+
+test("shared server/client parameter resolution handles defaults, invalid, out-of-range, and step-snapping", () => {
+  const schema = {
+    num: param.number({ min: 1, max: 5, step: 0.5, default: 2 }),
+    flag: param.boolean({ default: false }),
+    choice: param.choice({
+      options: [
+        { value: "a", label: "Alpha" },
+        { value: "b", label: "Beta" },
+      ],
+      default: "a",
+    }),
+    pt: param.point({
+      default: [0, 0],
+      bounds: { x: [-2, 2], y: [-3, 3] },
+    }),
+    t: param.time({ default: 0, duration: 10 }),
+  };
+
+  // 1. Defaults
+  const defaults = resolveDefaultParams(schema);
+  assert.deepEqual(defaults, {
+    num: 2,
+    flag: false,
+    choice: "a",
+    pt: [0, 0],
+    t: 0,
+  });
+
+  // 2. Out-of-range overrides
+  const outOfRange = resolveDefaultParams(schema, {
+    num: 10,
+    pt: [5, -10],
+    t: 25,
+  } as any);
+  assert.deepEqual(outOfRange, {
+    num: 5,
+    flag: false,
+    choice: "a",
+    pt: [2, -3],
+    t: 10,
+  });
+
+  // 3. Step-snapped overrides
+  const snapped = resolveDefaultParams(schema, {
+    num: 2.37,
+  } as any);
+  assert.equal(snapped.num, 2.5);
+
+  // 4. Invalid overrides fallback to default
+  const invalid = resolveDefaultParams(schema, {
+    num: "not-a-number",
+    choice: "unknown-option",
+    pt: "bad-point",
+    t: NaN,
+  } as any);
+  assert.deepEqual(invalid, {
+    num: 2,
+    flag: false,
+    choice: "a",
+    pt: [0, 0],
+    t: 0,
+  });
+
+  // 5. Mixed overrides produce fully sanitized result
+  const mixed = resolveDefaultParams(schema, {
+    num: 8.2,
+    flag: 1 as any,
+    choice: "invalid",
+    pt: [10, -10],
+  } as any);
+  assert.deepEqual(mixed, {
+    num: 5,
+    flag: true,
+    choice: "a",
+    pt: [2, -3],
+    t: 0,
+  });
+});

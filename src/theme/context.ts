@@ -6,7 +6,7 @@ const ThemeContext = createContext<FigureTheme>(defaultTheme);
 
 export interface ThemeProviderProps {
   theme?: FigureTheme;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export function ThemeProvider({ theme = defaultTheme, children }: ThemeProviderProps) {

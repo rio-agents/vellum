@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import type { FigureDefinition } from "../define.ts";
 import type {
   FigureParamsSchema,
@@ -20,12 +20,15 @@ export interface ControlsProps<
   params: InferParamsValues<P>;
   set: <K extends keyof InferParamsValues<P>>(name: K, value: InferParamsValues<P>[K]) => void;
   className?: string;
+  idPrefix?: string;
 }
 
 export function Controls<
   P extends FigureParamsSchema = FigureParamsSchema,
   D extends Record<string, unknown> = Record<string, unknown>
->({ definition, params, set, className }: ControlsProps<P, D>) {
+>({ definition, params, set, className, idPrefix }: ControlsProps<P, D>) {
+  const generatedId = useId();
+  const controlsId = idPrefix ?? generatedId;
   const schema = definition.params;
   if (!schema) return null;
 
@@ -68,6 +71,7 @@ export function Controls<
             return (
               <Slider
                 key={key}
+                id={`${controlsId}-${key}`}
                 name={key}
                 label={numConfig.label}
                 labelKind={numConfig.labelKind}
@@ -85,6 +89,7 @@ export function Controls<
             return (
               <Toggle
                 key={key}
+                id={`${controlsId}-${key}`}
                 name={key}
                 label={boolConfig.label}
                 labelKind={boolConfig.labelKind}
@@ -98,6 +103,7 @@ export function Controls<
             return (
               <Select
                 key={key}
+                id={`${controlsId}-${key}`}
                 name={key}
                 label={choiceConfig.label}
                 labelKind={choiceConfig.labelKind}

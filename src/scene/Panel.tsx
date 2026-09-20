@@ -2,13 +2,7 @@ import React, { type ReactNode } from "react";
 import { scaleLinear } from "../math/scale.ts";
 import { FrameContext, type FrameContextValue } from "./frame-context.ts";
 import { useFigureContext } from "./Figure.tsx";
-
-export interface RectArea {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
+import type { RectArea } from "./layout.ts";
 
 export interface PanelPadding {
   top?: number;

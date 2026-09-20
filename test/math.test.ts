@@ -295,7 +295,7 @@ describe("Math Core", () => {
     it("clips lines to box", () => {
       const box = { xMin: -2, xMax: 2, yMin: -2, yMax: 2 };
       const res = clipLineToBox([0, 0], [1, 1], box);
-      assert.ok(res);
+      assert(res);
       assert.deepEqual(res[0], [-2, -2]);
       assert.deepEqual(res[1], [2, 2]);
 

@@ -5,6 +5,7 @@ import { defaultTheme } from "../theme/default-theme.ts";
 import type { FigureTheme } from "../theme/types.ts";
 import type { FigureDefinition } from "../define.ts";
 import type { AnyParamConfig } from "../params/types.ts";
+import { resolveDefaultParams } from "../params/index.ts";
 import { FigureDefinitionContext } from "../scene/Figure.tsx";
 import { texToSvg } from "../text/tex.ts";
 import { registerSyncTexResolver, makeCacheKey } from "../text/tex-resolver.ts";
@@ -23,12 +24,10 @@ export function renderToSvgString(
 ): string {
   const theme = options.theme ?? defaultTheme;
 
-  const resolvedParams: Record<string, unknown> = {};
-  if (definition.params) {
-    for (const [key, p] of Object.entries(definition.params as Record<string, AnyParamConfig>)) {
-      resolvedParams[key] = options.params?.[key] ?? p.default;
-    }
-  }
+  const resolvedParams = resolveDefaultParams(
+    definition.params,
+    options.params as any
+  );
 
   const derived = definition.derive ? definition.derive(resolvedParams as any) : {};
 

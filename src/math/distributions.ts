@@ -1,5 +1,4 @@
-export type Vec2 = [number, number];
-export type Mat2 = [[number, number], [number, number]];
+import type { Vec2, Mat2 } from "./linalg.ts";
 
 export function normalPdf(x: number, mean: number = 0, variance: number = 1): number {
   if (variance <= 0) throw new Error("Variance must be positive");

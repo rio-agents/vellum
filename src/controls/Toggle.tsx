@@ -23,7 +23,7 @@ export function Toggle({
   className,
 }: ToggleProps) {
   const generatedId = useId();
-  const inputId = propId ?? (name ? `control-${name}` : generatedId);
+  const inputId = propId ?? (name ? `${generatedId}-${name}` : generatedId);
 
   return (
     <div className={`webnotes-control webnotes-control-toggle ${className ?? ""}`.trim()}>

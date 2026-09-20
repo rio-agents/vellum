@@ -26,7 +26,7 @@ export function Select<T extends string = string>({
   className,
 }: SelectProps<T>) {
   const generatedId = useId();
-  const selectId = propId ?? (name ? `control-${name}` : generatedId);
+  const selectId = propId ?? (name ? `${generatedId}-${name}` : generatedId);
 
   return (
     <div className={`webnotes-control webnotes-control-select ${className ?? ""}`.trim()}>
