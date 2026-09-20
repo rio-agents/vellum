@@ -1,4 +1,4 @@
-export type Vec2 = [number, number];
+import type { Vec2 } from "./linalg.ts";
 
 export function seededRandom(seed: number): () => number {
   let state = seed >>> 0;

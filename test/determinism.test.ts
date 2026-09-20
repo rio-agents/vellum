@@ -97,7 +97,7 @@ test("Figures determinism check: in-memory render matches committed SVG", async 
 
 test("Figures theme test: no un-themed literal colors in committed SVGs", async () => {
   const entries = await readdir(assetsDir);
-  const svgFiles = entries.filter((f) => f.endsWith(".svg")).sort();
+  const svgFiles = entries.filter((f: string) => f.endsWith(".svg")).sort();
 
   assert.ok(svgFiles.length > 0, "No SVG figures found in assets/figures");
 

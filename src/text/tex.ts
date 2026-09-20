@@ -4,6 +4,7 @@ import { SVG as SvgOutput } from "mathjax-full/js/output/svg.js";
 import { liteAdaptor } from "mathjax-full/js/adaptors/liteAdaptor.js";
 import { RegisterHTMLHandler } from "mathjax-full/js/handlers/html.js";
 import { AllPackages } from "mathjax-full/js/input/tex/AllPackages.js";
+import { LiteElement } from "mathjax-full/js/adaptors/lite/Element.js";
 
 export interface TexSvgResult {
   svg: string;
@@ -40,7 +41,7 @@ export function texToSvg(tex: string, options: { display?: boolean } = {}): TexS
 
   const node = mathDocument.convert(tex, { display });
   const svgNode = adaptor.firstChild(node);
-  if (!svgNode) {
+  if (!svgNode || !(svgNode instanceof LiteElement)) {
     throw new Error(`MathJax failed to convert TeX: ${tex}`);
   }
 

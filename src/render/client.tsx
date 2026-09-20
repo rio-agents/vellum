@@ -44,6 +44,8 @@ function InteractiveFigure({ definition, theme, initialParams }: InteractiveFigu
   );
 }
 
+let instanceCounter = 0;
+
 export function mountFigure(
   element: HTMLElement,
   definition: FigureDefinition<any, any>,
@@ -53,7 +55,8 @@ export function mountFigure(
   harvestMathFromSvg(element);
 
   const theme = options.theme ?? defaultTheme;
-  const root: Root = createRoot(element);
+  const instancePrefix = `${definition.id}-${++instanceCounter}`;
+  const root: Root = createRoot(element, { identifierPrefix: instancePrefix });
 
   root.render(
     <InteractiveFigure

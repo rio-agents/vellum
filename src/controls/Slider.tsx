@@ -34,7 +34,7 @@ export function Slider({
   className,
 }: SliderProps) {
   const generatedId = useId();
-  const inputId = propId ?? (name ? `control-${name}` : generatedId);
+  const inputId = propId ?? (name ? `${generatedId}-${name}` : generatedId);
 
   const formatted = format ? format(value) : defaultFormatNumber(value, step);
 
