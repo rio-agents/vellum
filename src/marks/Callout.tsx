@@ -12,7 +12,7 @@ export interface CalloutProps {
   label: string;
   labelKind?: "tex" | "text";
   anchor?: Anchor;
-  tone?: Tone | string;
+  tone?: Tone;
   weight?: Weight;
   className?: string;
 }

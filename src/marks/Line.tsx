@@ -1,22 +1,31 @@
 import React from "react";
 import { useFrameSafe } from "../scene/frame-context.ts";
+import { requireFrame } from "../scene/position.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-helpers.ts";
 import { clipLineToBox } from "../math/geometry.ts";
 
-export interface LineProps {
-  from?: [number, number];
-  to?: [number, number];
-  point?: [number, number];
-  direction?: [number, number];
-  slope?: number;
-  intercept?: number;
-  tone?: Tone | string;
+type NoPixelEnds = { x1?: never; y1?: never; x2?: never; y2?: never };
+type NoDataEnds = { from?: never; to?: never; point?: never; direction?: never; slope?: never; intercept?: never };
+
+/**
+ * Data forms, clipped to the enclosing Panel where unbounded: a segment `from`/`to`,
+ * a line through `point` along `direction`, or `y = slope x + intercept`.
+ * Pixel form: `x1`/`y1`/`x2`/`y2` in figure pixels.
+ */
+export type LineGeometry =
+  | ({ from: [number, number]; to: [number, number]; point?: never; direction?: never; slope?: never; intercept?: never } & NoPixelEnds)
+  | ({ point: [number, number]; direction: [number, number]; from?: never; to?: never; slope?: never; intercept?: never } & NoPixelEnds)
+  | ({ slope: number; intercept?: number; from?: never; to?: never; point?: never; direction?: never } & NoPixelEnds)
+  | ({ x1: number; y1: number; x2: number; y2: number } & NoDataEnds);
+
+export type LineProps = LineGeometry & {
+  tone?: Tone;
   weight?: Weight;
   dash?: Dash;
   opacity?: number;
   className?: string;
-}
+};
 
 export function Line({
   from,
@@ -25,6 +34,10 @@ export function Line({
   direction,
   slope,
   intercept = 0,
+  x1: px1,
+  y1: py1,
+  x2: px2,
+  y2: py2,
   tone = "ink",
   weight = "regular",
   dash = "solid",
@@ -43,8 +56,13 @@ export function Line({
   let x2: number;
   let y2: number;
 
-  if (frame) {
-    const { toPx, xDomain, yDomain } = frame;
+  if (px1 !== undefined && py1 !== undefined && px2 !== undefined && py2 !== undefined) {
+    x1 = px1;
+    y1 = py1;
+    x2 = px2;
+    y2 = py2;
+  } else {
+    const { toPx, xDomain, yDomain } = requireFrame("Line", frame, "`x1`/`y1`/`x2`/`y2`");
     let startPt: [number, number];
     let endPt: [number, number];
 
@@ -76,7 +94,7 @@ export function Line({
       startPt = clipped[0];
       endPt = clipped[1];
     } else {
-      return null;
+      throw new Error("Line: needs `from`/`to`, `point`/`direction`, `slope`, or `x1`/`y1`/`x2`/`y2`.");
     }
     const p1 = toPx(startPt);
     const p2 = toPx(endPt);
@@ -84,15 +102,6 @@ export function Line({
     y1 = p1[1];
     x2 = p2[0];
     y2 = p2[1];
-  } else {
-    if (from && to) {
-      x1 = from[0];
-      y1 = from[1];
-      x2 = to[0];
-      y2 = to[1];
-    } else {
-      return null;
-    }
   }
 
   return (

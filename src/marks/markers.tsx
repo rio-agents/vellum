@@ -15,12 +15,12 @@ export const STANDARD_TONES: Tone[] = [
   "series6",
 ];
 
-export function getArrowMarkerId(tone: Tone | string = "ink"): string {
+export function getArrowMarkerId(tone: Tone = "ink"): string {
   const safeTone = tone.replace(/[^a-zA-Z0-9_-]/g, "");
   return `fig-arrow-${safeTone}`;
 }
 
-export function getArrowMarkerUrl(tone: Tone | string = "ink"): string {
+export function getArrowMarkerUrl(tone: Tone = "ink"): string {
   return `url(#${getArrowMarkerId(tone)})`;
 }
 

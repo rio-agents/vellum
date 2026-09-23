@@ -5,11 +5,9 @@ import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-help
 
 export interface PolygonProps {
   points: readonly [number, number][];
-  tone?: Tone | string;
-  fill?: string;
+  tone?: Tone;
   fillOpacity?: number;
-  stroke?: string;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   weight?: Weight;
   dash?: Dash;
   className?: string;
@@ -18,9 +16,7 @@ export interface PolygonProps {
 export function Polygon({
   points,
   tone = "accent",
-  fill,
   fillOpacity,
-  stroke,
   strokeTone,
   weight = "regular",
   dash = "solid",
@@ -30,10 +26,10 @@ export function Polygon({
   const theme = useTheme();
 
   const themeTone = resolveTone(tone, theme);
-  const fillColor = fill ?? themeTone;
+  const fillColor = themeTone;
   const opacity = fillOpacity ?? theme.opacity.fill;
 
-  const strokeColor = stroke ?? (strokeTone ? resolveTone(strokeTone, theme) : themeTone);
+  const strokeColor = strokeTone ? resolveTone(strokeTone, theme) : themeTone;
   const strokeWidth = resolveWeight(weight, theme);
   const strokeDasharray = resolveDash(dash);
 

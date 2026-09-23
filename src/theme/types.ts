@@ -21,6 +21,8 @@ export interface FigureTheme {
     tick: number;
     caption: number;
     math: number;
+    /** Large standalone symbols, such as a sign marking a quadrant. */
+    symbol: number;
   };
   stroke: {
     hairline: number;

@@ -317,7 +317,6 @@ describe("Math Core", () => {
       assert.equal(resolveTone("accent", defaultTheme), defaultTheme.color.accent);
       assert.equal(resolveTone("series1", defaultTheme), defaultTheme.color.series[0]);
       assert.equal(resolveTone("series6", defaultTheme), defaultTheme.color.series[5]);
-      assert.equal(resolveTone("#123456", defaultTheme), "#123456");
     });
   });
 });

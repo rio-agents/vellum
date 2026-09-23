@@ -1,67 +1,63 @@
 import React from "react";
-import { useFrame } from "../scene/frame-context.ts";
+import { useFrameSafe } from "../scene/frame-context.ts";
+import { requireFrame } from "../scene/position.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-helpers.ts";
 
-export interface RectProps {
-  x: [number, number];
-  y: [number, number];
-  tone?: Tone | string;
-  fill?: string;
+/** Opposite corners in data coordinates, or a box in figure pixels. */
+export type RectGeometry =
+  | { from: [number, number]; to: [number, number]; x?: never; y?: never; width?: never; height?: never }
+  | { x: number; y: number; width: number; height: number; from?: never; to?: never };
+
+export type RectProps = RectGeometry & {
+  tone?: Tone;
+  /** Fill opacity; 0 draws an outline only. */
   fillOpacity?: number;
-  stroke?: string;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   weight?: Weight;
   dash?: Dash;
   className?: string;
-}
+};
 
 export function Rect({
+  from,
+  to,
   x,
   y,
+  width,
+  height,
   tone = "accent",
-  fill,
   fillOpacity,
-  stroke,
   strokeTone,
   weight = "hairline",
   dash = "solid",
   className,
 }: RectProps) {
-  const frame = useFrame();
+  const frame = useFrameSafe();
   const theme = useTheme();
 
-  const themeTone = resolveTone(tone, theme);
-  const fillColor = fill ?? themeTone;
-  const opacity = fillOpacity ?? theme.opacity.fill;
-
-  const strokeColor = stroke ?? (strokeTone ? resolveTone(strokeTone, theme) : "none");
-  const strokeWidth = resolveWeight(weight, theme);
-  const strokeDasharray = resolveDash(dash);
-
-  const { sx, sy } = frame;
-
-  const x0Px = sx(x[0]);
-  const x1Px = sx(x[1]);
-  const y0Px = sy(y[0]);
-  const y1Px = sy(y[1]);
-
-  const left = Math.min(x0Px, x1Px);
-  const top = Math.min(y0Px, y1Px);
-  const width = Math.abs(x1Px - x0Px);
-  const height = Math.abs(y1Px - y0Px);
+  let box: { left: number; top: number; width: number; height: number };
+  if (from && to) {
+    const { sx, sy } = requireFrame("Rect", frame, "`x`/`y`/`width`/`height`");
+    const [x0, y0, x1, y1] = [sx(from[0]), sy(from[1]), sx(to[0]), sy(to[1])];
+    box = { left: Math.min(x0, x1), top: Math.min(y0, y1), width: Math.abs(x1 - x0), height: Math.abs(y1 - y0) };
+  } else if (x !== undefined && y !== undefined && width !== undefined && height !== undefined) {
+    box = { left: x, top: y, width, height };
+  } else {
+    throw new Error("Rect: needs `from`/`to` (data corners) or `x`/`y`/`width`/`height` (figure pixels).");
+  }
 
   return (
     <rect
-      x={Number(left.toFixed(2))}
-      y={Number(top.toFixed(2))}
-      width={Number(width.toFixed(2))}
-      height={Number(height.toFixed(2))}
-      fill={fillColor}
-      fillOpacity={opacity}
-      stroke={strokeColor}
-      strokeWidth={strokeWidth}
-      strokeDasharray={strokeDasharray}
+      x={Number(box.left.toFixed(2))}
+      y={Number(box.top.toFixed(2))}
+      width={Number(box.width.toFixed(2))}
+      height={Number(box.height.toFixed(2))}
+      fill={fillOpacity === 0 ? "none" : resolveTone(tone, theme)}
+      fillOpacity={fillOpacity === 0 ? undefined : (fillOpacity ?? theme.opacity.fill)}
+      stroke={strokeTone ? resolveTone(strokeTone, theme) : "none"}
+      strokeWidth={resolveWeight(weight, theme)}
+      strokeDasharray={resolveDash(dash)}
       className={`webnotes-rect ${className ?? ""}`.trim()}
     />
   );

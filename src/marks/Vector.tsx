@@ -13,7 +13,7 @@ export interface VectorProps {
   labelKind?: "tex" | "text";
   labelAnchor?: Anchor;
   labelOffset?: [number, number];
-  tone?: Tone | string;
+  tone?: Tone;
   weight?: Weight;
   dash?: Dash;
   opacity?: number;

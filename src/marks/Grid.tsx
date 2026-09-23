@@ -6,7 +6,7 @@ import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-help
 export interface GridProps {
   ticksX?: number | number[];
   ticksY?: number | number[];
-  tone?: Tone | string;
+  tone?: Tone;
   weight?: Weight;
   dash?: Dash;
   opacity?: number;

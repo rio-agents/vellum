@@ -6,11 +6,11 @@ import { resolveWeight, type Weight } from "./style-helpers.ts";
 export interface ScatterProps {
   points: readonly [number, number][];
   radius?: number;
-  tone?: Tone | string;
+  tone?: Tone;
   fillOpacity?: number;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   strokeWeight?: Weight;
-  pointTone?: (point: [number, number], index: number) => Tone | string;
+  pointTone?: (point: [number, number], index: number) => Tone;
   filterInside?: boolean;
   className?: string;
 }

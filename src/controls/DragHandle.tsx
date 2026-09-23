@@ -9,7 +9,7 @@ export interface DragHandleProps {
   bounds?: { x?: [number, number]; y?: [number, number] };
   step?: number;
   label?: string;
-  tone?: Tone | string;
+  tone?: Tone;
   radius?: number;
   constrain?: (pt: [number, number]) => [number, number];
   className?: string;

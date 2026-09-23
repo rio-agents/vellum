@@ -1,24 +1,32 @@
 import React from "react";
 import { useFrameSafe } from "../scene/frame-context.ts";
+import { requireFrame } from "../scene/position.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-helpers.ts";
 import { getArrowMarkerUrl } from "./markers.tsx";
 
-export interface ArrowProps {
-  from: [number, number];
-  to: [number, number];
-  tone?: Tone | string;
+/** Data endpoints `from`/`to`, or figure-pixel endpoints `x1`/`y1`/`x2`/`y2`. */
+export type ArrowGeometry =
+  | { from: [number, number]; to: [number, number]; x1?: never; y1?: never; x2?: never; y2?: never }
+  | { x1: number; y1: number; x2: number; y2: number; from?: never; to?: never };
+
+export type ArrowProps = ArrowGeometry & {
+  tone?: Tone;
   weight?: Weight;
   dash?: Dash;
   opacity?: number;
   markerStart?: boolean;
   markerEnd?: boolean;
   className?: string;
-}
+};
 
 export function Arrow({
   from,
   to,
+  x1: px1,
+  y1: py1,
+  x2: px2,
+  y2: py2,
   tone = "ink",
   weight = "regular",
   dash = "solid",
@@ -34,8 +42,16 @@ export function Arrow({
   const strokeWidth = resolveWeight(weight, theme);
   const strokeDasharray = resolveDash(dash);
 
-  const [x1, y1] = frame ? frame.toPx(from) : from;
-  const [x2, y2] = frame ? frame.toPx(to) : to;
+  let x1: number, y1: number, x2: number, y2: number;
+  if (from && to) {
+    const { toPx } = requireFrame("Arrow", frame, "`x1`/`y1`/`x2`/`y2`");
+    [x1, y1] = toPx(from);
+    [x2, y2] = toPx(to);
+  } else if (px1 !== undefined && py1 !== undefined && px2 !== undefined && py2 !== undefined) {
+    [x1, y1, x2, y2] = [px1, py1, px2, py2];
+  } else {
+    throw new Error("Arrow: needs `from`/`to` (data coordinates) or `x1`/`y1`/`x2`/`y2` (figure pixels).");
+  }
 
   const markerUrl = getArrowMarkerUrl(tone);
 

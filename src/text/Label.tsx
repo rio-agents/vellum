@@ -1,18 +1,16 @@
 import React, { type CSSProperties } from "react";
 import type { Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
+import { placementToPx, type Placement } from "../scene/position.ts";
 import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
 
-export interface LabelProps {
+export type LabelProps = Placement & {
   text: string;
-  at?: [number, number];
-  x?: number;
-  y?: number;
   anchor?: Anchor;
+  /** Pixel nudge applied after placement. */
   offset?: [number, number];
-  tone?: Tone | string;
-  fontSize?: number | TextRole;
-  size?: number | TextRole;
+  tone?: Tone;
+  size?: TextRole;
   fontFamily?: string;
   fontWeight?: number | string;
   letterSpacing?: number | string;
@@ -21,7 +19,7 @@ export interface LabelProps {
   halo?: boolean;
   style?: CSSProperties;
   className?: string;
-}
+};
 
 function anchorToSvgAlignment(anchor: Anchor): {
   textAnchor: "start" | "middle" | "end";
@@ -83,8 +81,7 @@ export function Label({
   anchor = "center",
   offset = [0, 0],
   tone = "ink",
-  fontSize,
-  size: propSize,
+  size,
   fontFamily,
   fontWeight,
   letterSpacing,
@@ -96,30 +93,13 @@ export function Label({
   const theme = useTheme();
   const frame = useFrameSafe();
 
-  const finalSize = resolveFontSize(propSize ?? fontSize, "label", theme);
+  const finalSize = resolveFontSize(size, "label", theme);
   const toneColor = resolveTone(tone, theme);
   const face = fontFamily ?? theme.font.sans;
 
-  let targetX = x ?? 0;
-  let targetY = y ?? 0;
-
-  if (at) {
-    if (frame) {
-      const [px, py] = frame.toPx(at);
-      targetX = px;
-      targetY = py;
-    } else {
-      targetX = at[0];
-      targetY = at[1];
-    }
-  } else if (frame && x !== undefined && y !== undefined) {
-    const [px, py] = frame.toPx([x, y]);
-    targetX = px;
-    targetY = py;
-  }
-
-  targetX += offset[0];
-  targetY += offset[1];
+  const [px, py] = placementToPx("Label", { at, x, y }, frame);
+  const targetX = px + offset[0];
+  const targetY = py + offset[1];
 
   const finalX = Number(targetX.toFixed(2));
   const finalY = Number(targetY.toFixed(2));

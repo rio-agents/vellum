@@ -7,7 +7,7 @@ import * as esbuild from "esbuild";
 
 const root = process.cwd().endsWith("packages/figures") ? path.resolve(process.cwd(), "../..") : process.cwd();
 
-type Fixture = Record<"tickLabels" | "axisTitles" | "haloText" | "haloMath" | "plainMath", () => string>;
+type Fixture = Record<string, () => string>;
 let fixture: Fixture;
 
 before(async () => {
@@ -63,5 +63,56 @@ describe("Label halos", () => {
     assert.equal((markup.match(/<svg width/g) ?? []).length, 2, "halo copy plus the label itself");
     assert.match(markup, /stroke="#ffffff" fill="#ffffff" stroke-width="\d+(\.\d+)?" stroke-linejoin="round"/);
     assert.doesNotMatch(fixture.plainMath(), /stroke-linejoin="round"/);
+  });
+});
+
+const tag = (markup: string, name: string) => {
+  const element = markup.match(new RegExp(`<${name}\\b[^>]*>`))?.[0];
+  assert.ok(element, `<${name}> is rendered`);
+  return (attr: string) => element.match(new RegExp(` ${attr}="([^"]*)"`))?.[1];
+};
+
+describe("Coordinate rule", () => {
+  it("reads scalar x/y as figure pixels, inside or outside a panel", () => {
+    for (const markup of [fixture.labelPixelsInPanel(), fixture.labelPixelsInFigure()]) {
+      assert.equal(attribute(markup, "px", "x"), "40");
+      assert.equal(attribute(markup, "px", "y"), "20");
+    }
+    const point = tag(fixture.pointPixelsInPanel(), "circle");
+    assert.equal(point("cx"), "40");
+    assert.equal(point("cy"), "20");
+    const line = tag(fixture.linePixelsInPanel(), "line");
+    assert.deepEqual(["x1", "y1", "x2", "y2"].map(line), ["10", "20", "30", "40"]);
+    const arrow = tag(fixture.arrowPixelsInFigure(), "line");
+    assert.deepEqual(["x1", "y1", "x2", "y2"].map(arrow), ["10", "20", "30", "40"]);
+  });
+
+  it("reads tuples as panel data and adds offset in pixels", () => {
+    // (5, 4) is pixel (300, 90); the offset moves it 3 px right and 2 px up.
+    assert.equal(attribute(fixture.labelDataInPanel(), "data", "x"), "303");
+    assert.equal(attribute(fixture.labelDataInPanel(), "data", "y"), "88");
+  });
+
+  it("rejects data coordinates outside a panel, naming the pixel alternative", () => {
+    assert.throws(fixture.labelDataInFigure, /Label: .*need an enclosing <Panel>; use `x`\/`y`/);
+    assert.throws(fixture.mathDataInFigure, /MathLabel: .*<Panel>/);
+    assert.throws(fixture.pointDataInFigure, /Point: .*<Panel>/);
+    assert.throws(fixture.lineDataInFigure, /Line: .*`x1`\/`y1`\/`x2`\/`y2`/);
+    assert.throws(fixture.arrowDataInFigure, /Arrow: .*<Panel>/);
+  });
+
+  it("rejects a label given both forms", () => {
+    assert.throws(fixture.labelBothForms, /either `at`.*or `x`\/`y`/);
+  });
+
+  it("draws Rect from data corners or a pixel box", () => {
+    // Data (2, 1)-(4, 3) spans pixels x 180-260 and y 130-210.
+    const corners = tag(fixture.rectCornersInPanel(), "rect");
+    assert.deepEqual(["x", "y", "width", "height"].map(corners), ["180", "130", "80", "80"]);
+    const pixels = tag(fixture.rectPixelsInFigure(), "rect");
+    assert.deepEqual(["x", "y", "width", "height"].map(pixels), ["10", "20", "30", "40"]);
+    const outline = tag(fixture.rectOutline(), "rect");
+    assert.equal(outline("fill"), "none");
+    assert.equal(outline("fill-opacity"), undefined);
   });
 });

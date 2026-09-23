@@ -10,7 +10,7 @@ export interface CurveProps {
   domain?: [number, number];
   samples?: number;
   curve?: CurveFactory;
-  tone?: Tone | string;
+  tone?: Tone;
   weight?: Weight;
   dash?: Dash;
   opacity?: number;

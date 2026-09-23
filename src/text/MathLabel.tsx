@@ -3,26 +3,24 @@ import { resolveTex, loadClientTex } from "./tex-resolver.ts";
 import type { TexSvgResult } from "./tex.ts";
 import { computeBoxOffset, type Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
+import { placementToPx, type Placement } from "../scene/position.ts";
 import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
 import { HALO_PX } from "./Label.tsx";
 
-export interface MathLabelProps {
+export type MathLabelProps = Placement & {
   tex: string;
-  at?: [number, number];
-  x?: number;
-  y?: number;
   anchor?: Anchor;
+  /** Pixel nudge applied after placement. */
   offset?: [number, number];
-  tone?: Tone | string;
-  fontSize?: number | TextRole;
-  size?: number | TextRole;
+  tone?: Tone;
+  size?: TextRole;
   display?: boolean;
   allowOverlap?: boolean;
   /** Outline the text in the figure surface color so it stays legible over marks. */
   halo?: boolean;
   style?: CSSProperties;
   className?: string;
-}
+};
 
 export function MathLabel({
   tex,
@@ -32,8 +30,7 @@ export function MathLabel({
   anchor = "center",
   offset = [0, 0],
   tone = "ink",
-  fontSize,
-  size: propSize,
+  size: sizeRole,
   display = false,
   allowOverlap = false,
   halo = false,
@@ -56,29 +53,12 @@ export function MathLabel({
     }
   }, [tex, display, initialMath]);
 
-  const size = resolveFontSize(propSize ?? fontSize, "math", theme);
+  const size = resolveFontSize(sizeRole, "math", theme);
   const toneColor = resolveTone(tone, theme);
 
-  let targetX = x ?? 0;
-  let targetY = y ?? 0;
-
-  if (at) {
-    if (frame) {
-      const [px, py] = frame.toPx(at);
-      targetX = px;
-      targetY = py;
-    } else {
-      targetX = at[0];
-      targetY = at[1];
-    }
-  } else if (frame && x !== undefined && y !== undefined) {
-    const [px, py] = frame.toPx([x, y]);
-    targetX = px;
-    targetY = py;
-  }
-
-  targetX += offset[0];
-  targetY += offset[1];
+  const [px, py] = placementToPx("MathLabel", { at, x, y }, frame);
+  const targetX = px + offset[0];
+  const targetY = py + offset[1];
 
   if (!math) {
     return (

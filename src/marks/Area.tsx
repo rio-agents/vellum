@@ -17,9 +17,9 @@ export interface AreaProps {
   domain?: [number, number];
   samples?: number;
   curve?: CurveFactory;
-  tone?: Tone | string;
+  tone?: Tone;
   fillOpacity?: number;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   strokeWeight?: Weight;
   className?: string;
 }

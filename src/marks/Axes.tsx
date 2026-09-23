@@ -18,7 +18,7 @@ export interface AxesProps {
   yLabel?: string;
   xLabelKind?: "tex" | "text";
   yLabelKind?: "tex" | "text";
-  tone?: Tone | string;
+  tone?: Tone;
   weight?: Weight;
 }
 
@@ -122,7 +122,7 @@ export function Axes({
                   at={[val, oy]}
                   offset={[0, tLen + 2]}
                   anchor="n"
-                  fontSize={theme.text.tick}
+                  size="tick"
                   tone="muted"
                 />
               )}
@@ -150,7 +150,7 @@ export function Axes({
                   at={[ox, val]}
                   offset={[-(tLen + 3), 0]}
                   anchor="e"
-                  fontSize={theme.text.tick}
+                  size="tick"
                   tone="muted"
                 />
               )}
@@ -166,7 +166,7 @@ export function Axes({
             at={[xDomain[1], oy]}
             offset={[10, 0]}
             anchor="w"
-            fontSize={theme.text.label}
+            size="label"
             tone="ink"
           />
         ) : (
@@ -175,7 +175,7 @@ export function Axes({
             at={[xDomain[1], oy]}
             offset={[10, 0]}
             anchor="w"
-            fontSize={theme.text.label}
+            size="label"
             tone="ink"
           />
         ))}
@@ -187,7 +187,7 @@ export function Axes({
             at={[ox, yDomain[1]]}
             offset={[0, -10]}
             anchor="s"
-            fontSize={theme.text.label}
+            size="label"
             tone="ink"
           />
         ) : (
@@ -196,7 +196,7 @@ export function Axes({
             at={[ox, yDomain[1]]}
             offset={[0, -10]}
             anchor="s"
-            fontSize={theme.text.label}
+            size="label"
             tone="ink"
           />
         ))}

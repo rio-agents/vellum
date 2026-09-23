@@ -7,7 +7,7 @@ export interface BarDatum {
   x: number;
   y: number;
   width?: number;
-  tone?: Tone | string;
+  tone?: Tone;
 }
 
 export interface BarsProps {
@@ -15,9 +15,9 @@ export interface BarsProps {
   points?: [number, number][];
   baseline?: number;
   barWidth?: number;
-  tone?: Tone | string;
+  tone?: Tone;
   fillOpacity?: number;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   strokeWeight?: Weight;
   className?: string;
 }

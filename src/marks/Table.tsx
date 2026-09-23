@@ -7,12 +7,12 @@ import { Line } from "./Line.tsx";
 export interface TableCell {
   label: string;
   value?: number;
-  tone?: Tone | string;
+  tone?: Tone;
   bold?: boolean;
   kind?: "tex" | "text";
   fillOpacity?: number;
   highlight?: boolean;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   dashed?: boolean;
 }
 
@@ -21,7 +21,7 @@ export type TableCellInput = string | number | TableCell;
 export interface TableTotalItem {
   label: string;
   value?: number;
-  tone?: Tone | string;
+  tone?: Tone;
   kind?: "tex" | "text";
 }
 
@@ -33,7 +33,7 @@ export interface TableProps {
   data: TableCellInput[][];
   cellWidth?: number;
   cellHeight?: number;
-  cellTone?: Tone | string;
+  cellTone?: Tone;
   cellMax?: number;
   title?: string;
   rowTotals?: (string | number | TableTotalItem)[];
@@ -92,7 +92,7 @@ export function Table({
           x={x + gridW / 2}
           y={y - 40}
           anchor="center"
-          fontSize="title"
+          size="title"
           tone="ink"
         />
       )}
@@ -104,9 +104,9 @@ export function Table({
         const cx = x + j * cellWidth + cellWidth / 2;
         const cy = y - 12;
         return kind === "tex" ? (
-          <MathLabel key={`ch-${j}`} tex={colLabel} x={cx} y={cy} anchor="s" fontSize="label" tone="muted" />
+          <MathLabel key={`ch-${j}`} tex={colLabel} x={cx} y={cy} anchor="s" size="label" tone="muted" />
         ) : (
-          <Label key={`ch-${j}`} text={colLabel} x={cx} y={cy} anchor="s" fontSize="label" tone="muted" />
+          <Label key={`ch-${j}`} text={colLabel} x={cx} y={cy} anchor="s" size="label" tone="muted" />
         );
       })}
 
@@ -117,9 +117,9 @@ export function Table({
         const cx = x - 18;
         const cy = y + i * cellHeight + cellHeight / 2;
         return kind === "tex" ? (
-          <MathLabel key={`rh-${i}`} tex={rowLabel} x={cx} y={cy} anchor="e" fontSize="label" tone="muted" />
+          <MathLabel key={`rh-${i}`} tex={rowLabel} x={cx} y={cy} anchor="e" size="label" tone="muted" />
         ) : (
-          <Label key={`rh-${i}`} text={rowLabel} x={cx} y={cy} anchor="e" fontSize="label" tone="muted" />
+          <Label key={`rh-${i}`} text={rowLabel} x={cx} y={cy} anchor="e" size="label" tone="muted" />
         );
       })}
 
@@ -135,7 +135,7 @@ export function Table({
           let isBold = false;
           let kind: "tex" | "text" = "text";
           let opacity: number | undefined;
-          let strokeT: Tone | string | undefined;
+          let strokeT: Tone | undefined;
           let isDashed = false;
 
           if (typeof cellRaw === "object" && cellRaw !== null) {
@@ -187,7 +187,7 @@ export function Table({
                   x={cx + cellWidth / 2}
                   y={cy + cellHeight / 2}
                   anchor="center"
-                  fontSize="label"
+                  size="label"
                   tone={isBold ? cellT : "ink"}
                 />
               ) : (
@@ -196,7 +196,7 @@ export function Table({
                   x={cx + cellWidth / 2}
                   y={cy + cellHeight / 2}
                   anchor="center"
-                  fontSize="label"
+                  size="label"
                   fontWeight={isBold ? 700 : 500}
                   tone={isBold ? cellT : labelStr === "0" ? "muted" : "ink"}
                 />
@@ -209,7 +209,7 @@ export function Table({
       {/* Row Totals (Right margin) */}
       {rowTotals && (
         <g className="webnotes-table-row-totals">
-          <Line from={[gridRight + 22, y]} to={[gridRight + 22, gridBottom]} tone="ink" weight="regular" />
+          <Line x1={gridRight + 22} y1={y} x2={gridRight + 22} y2={gridBottom} tone="ink" weight="regular" />
           {rowTotals.map((totRaw, i) => {
             const cy = y + i * cellHeight + cellHeight / 2;
             const item: TableTotalItem =
@@ -247,7 +247,7 @@ export function Table({
                   x={gridRight + 30 + w}
                   y={cy}
                   anchor="w"
-                  fontSize="label"
+                  size="label"
                   fontWeight={600}
                   tone={itemTone}
                 />
@@ -260,7 +260,7 @@ export function Table({
               x={gridRight + 22}
               y={y - 14}
               anchor="w"
-              fontSize="label"
+              size="label"
               tone="ink"
             />
           )}
@@ -270,7 +270,7 @@ export function Table({
               x={gridRight + 22}
               y={gridBottom + 20}
               anchor="w"
-              fontSize="caption"
+              size="caption"
               tone="muted"
             />
           )}
@@ -280,7 +280,7 @@ export function Table({
       {/* Column Totals (Bottom margin) */}
       {colTotals && (
         <g className="webnotes-table-col-totals">
-          <Line from={[x, gridBottom + 22]} to={[gridRight, gridBottom + 22]} tone="ink" weight="regular" />
+          <Line x1={x} y1={gridBottom + 22} x2={gridRight} y2={gridBottom + 22} tone="ink" weight="regular" />
           {colTotals.map((totRaw, j) => {
             const cx = x + j * cellWidth + cellWidth / 2;
             const item: TableTotalItem =
@@ -318,7 +318,7 @@ export function Table({
                   x={cx}
                   y={gridBottom + 40 + h}
                   anchor="center"
-                  fontSize="label"
+                  size="label"
                   fontWeight={600}
                   tone={itemTone}
                 />
@@ -331,7 +331,7 @@ export function Table({
               x={x - 14}
               y={gridBottom + 60}
               anchor="e"
-              fontSize="label"
+              size="label"
               tone="ink"
             />
           )}
@@ -341,7 +341,7 @@ export function Table({
               x={x - 14}
               y={gridBottom + 86}
               anchor="e"
-              fontSize="caption"
+              size="caption"
               tone="muted"
             />
           )}

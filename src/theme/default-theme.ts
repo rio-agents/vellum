@@ -30,6 +30,7 @@ export const defaultTheme: FigureTheme = {
     tick: 11,
     caption: 12,
     math: 13.5,
+    symbol: 30,
   },
   stroke: {
     hairline: 1,

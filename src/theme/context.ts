@@ -1,5 +1,5 @@
 import React, { createContext, useContext, type ReactNode } from "react";
-import type { FigureTheme, Tone } from "./types.ts";
+import type { FigureTheme, TextRole, Tone } from "./types.ts";
 import { defaultTheme } from "./default-theme.ts";
 
 const ThemeContext = createContext<FigureTheme>(defaultTheme);
@@ -17,9 +17,7 @@ export function useTheme(): FigureTheme {
   return useContext(ThemeContext);
 }
 
-export function resolveTone(tone: Tone | string | undefined, theme: FigureTheme): string {
-  if (!tone) return theme.color.ink;
-
+export function resolveTone(tone: Tone, theme: FigureTheme): string {
   switch (tone) {
     case "ink":
       return theme.color.ink;
@@ -49,19 +47,9 @@ export function resolveTone(tone: Tone | string | undefined, theme: FigureTheme)
       return theme.color.series[4] ?? theme.color.ink;
     case "series6":
       return theme.color.series[5] ?? theme.color.ink;
-    default:
-      return tone;
   }
 }
 
-export function resolveFontSize(
-  size: number | import("./types.ts").TextRole | undefined,
-  defaultRole: import("./types.ts").TextRole,
-  theme: FigureTheme
-): number {
-  if (typeof size === "number") return size;
-  if (typeof size === "string" && size in theme.text) {
-    return theme.text[size as import("./types.ts").TextRole];
-  }
-  return theme.text[defaultRole];
+export function resolveFontSize(size: TextRole | undefined, defaultRole: TextRole, theme: FigureTheme): number {
+  return theme.text[size ?? defaultRole];
 }

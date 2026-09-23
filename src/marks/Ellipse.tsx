@@ -11,11 +11,9 @@ export interface EllipseProps {
   semiAxes?: [number, number];
   angle?: number;
   samples?: number;
-  tone?: Tone | string;
-  fill?: string;
+  tone?: Tone;
   fillOpacity?: number;
-  stroke?: string;
-  strokeTone?: Tone | string;
+  strokeTone?: Tone;
   weight?: Weight;
   dash?: Dash;
   className?: string;
@@ -29,9 +27,7 @@ export function Ellipse({
   angle = 0,
   samples = 180,
   tone = "accent",
-  fill,
   fillOpacity,
-  stroke,
   strokeTone,
   weight = "regular",
   dash = "solid",
@@ -41,11 +37,11 @@ export function Ellipse({
   const theme = useTheme();
 
   const themeTone = resolveTone(tone, theme);
-  const strokeColor = stroke ?? (strokeTone ? resolveTone(strokeTone, theme) : themeTone);
+  const strokeColor = strokeTone ? resolveTone(strokeTone, theme) : themeTone;
   const strokeWidth = resolveWeight(weight, theme);
   const strokeDasharray = resolveDash(dash);
 
-  const fillColor = fill ?? (fillOpacity !== undefined && fillOpacity > 0 ? themeTone : "none");
+  const fillColor = fillOpacity !== undefined && fillOpacity > 0 ? themeTone : "none";
   const opacity = fillOpacity;
 
   let pts: Vec2[];

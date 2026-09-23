@@ -1,10 +1,10 @@
-import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
+import { useTheme, resolveTone, type Tone, type TextRole } from "../theme/index.ts";
 import { resolveDash, type Dash } from "./style-helpers.ts";
 import { Label } from "../text/Label.tsx";
 
 export interface LegendEntry {
   label: string;
-  tone: Tone | string;
+  tone: Tone;
   dash?: Dash;
   shape?: "line" | "point" | "rect";
 }
@@ -15,7 +15,7 @@ export interface LegendProps {
   y: number;
   lineLength?: number;
   gap?: number;
-  fontSize?: number | TextRole;
+  size?: TextRole;
   className?: string;
 }
 
@@ -25,11 +25,10 @@ export function Legend({
   y,
   lineLength = 36,
   gap = 26,
-  fontSize,
+  size = "label",
   className,
 }: LegendProps) {
   const theme = useTheme();
-  const size = resolveFontSize(fontSize, "label", theme);
 
   return (
     <g className={`webnotes-legend ${className ?? ""}`.trim()}>
@@ -77,7 +76,7 @@ export function Legend({
               x={x + lineLength + 10}
               y={itemY}
               anchor="w"
-              fontSize={size}
+              size={size}
               tone="ink"
             />
           </g>
