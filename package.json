@@ -16,7 +16,8 @@
   },
   "scripts": {
     "test": "node --experimental-strip-types --test test/*.test.ts",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "examples": "node ./bin/vellum.mjs render"
   },
   "dependencies": {
     "d3-scale": "^4.0.2",

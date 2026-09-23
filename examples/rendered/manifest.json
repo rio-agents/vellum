@@ -1,0 +1,57 @@
+{
+  "block-diagram": {
+    "figure": "block-diagram",
+    "source": "examples/block-diagram.figure.tsx",
+    "layouts": [
+      "main"
+    ],
+    "interactive": false,
+    "animated": false
+  },
+  "custom-mark": {
+    "figure": "custom-mark",
+    "source": "examples/custom-mark.figure.tsx",
+    "layouts": [
+      "main"
+    ],
+    "interactive": false,
+    "animated": false
+  },
+  "function-plot": {
+    "figure": "function-plot",
+    "source": "examples/function-plot.figure.tsx",
+    "layouts": [
+      "main"
+    ],
+    "interactive": false,
+    "animated": false
+  },
+  "staged-descent--step-1": {
+    "figure": "staged-descent",
+    "variant": "step-1",
+    "params": {
+      "step": 1
+    },
+    "source": "examples/staged-descent.figure.tsx",
+    "layouts": [
+      "wide",
+      "narrow"
+    ],
+    "interactive": false,
+    "animated": false
+  },
+  "staged-descent--step-3": {
+    "figure": "staged-descent",
+    "variant": "step-3",
+    "params": {
+      "step": 3
+    },
+    "source": "examples/staged-descent.figure.tsx",
+    "layouts": [
+      "wide",
+      "narrow"
+    ],
+    "interactive": false,
+    "animated": false
+  }
+}
