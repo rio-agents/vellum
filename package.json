@@ -1,7 +1,14 @@
 {
   "name": "@rio-agents/vellum",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Mathematical and technical figures as SVG, drawn with React.",
+  "private": true,
   "type": "module",
+  "repository": "github:rio-agents/vellum",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.1.2",
   "bin": {
     "vellum": "./bin/vellum.mjs"
   },
@@ -15,6 +22,7 @@
     "./manifest": "./src/build/manifest.ts"
   },
   "scripts": {
+    "check": "tsc -p tsconfig.json && node --experimental-strip-types --test test/*.test.ts",
     "test": "node --experimental-strip-types --test test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json",
     "examples": "node ./bin/vellum.mjs render"
