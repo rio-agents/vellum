@@ -15,7 +15,6 @@ export interface FigureTheme {
     serif: string;
   };
   text: {
-    eyebrow: number;
     title: number;
     label: number;
     tick: number;

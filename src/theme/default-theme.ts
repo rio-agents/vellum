@@ -24,7 +24,6 @@ export const defaultTheme: FigureTheme = {
     serif: '"Source Serif 4", Georgia, serif',
   },
   text: {
-    eyebrow: 12,
     title: 15,
     label: 13,
     tick: 11,

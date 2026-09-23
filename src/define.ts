@@ -29,7 +29,6 @@ export interface FigureDefinition<
   D extends Record<string, unknown> = Record<string, unknown>
 > {
   id: string;
-  title?: string;
   description: string;
   size: { width: number; height: number };
   params?: P;
