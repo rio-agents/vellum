@@ -39,7 +39,7 @@ export function Figure({ children, className, style }: FigureProps) {
       role="img"
       aria-label={description}
       data-layout={layout}
-      className={`webnotes-figure-svg ${className ?? ""}`.trim()}
+      className={`vellum-figure-svg ${className ?? ""}`.trim()}
       // Sizing and visibility belong to the page's CSS, which chooses between layouts.
       style={{ fontFamily: theme.font.sans, ...style }}
     >

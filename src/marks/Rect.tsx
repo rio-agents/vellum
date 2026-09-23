@@ -58,7 +58,7 @@ export function Rect({
       stroke={strokeTone ? resolveTone(strokeTone, theme) : "none"}
       strokeWidth={resolveWeight(weight, theme)}
       strokeDasharray={resolveDash(dash)}
-      className={`webnotes-rect ${className ?? ""}`.trim()}
+      className={`vellum-rect ${className ?? ""}`.trim()}
     />
   );
 }

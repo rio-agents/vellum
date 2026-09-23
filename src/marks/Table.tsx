@@ -84,7 +84,7 @@ export function Table({
   const accentColor = resolveTone(cellTone, theme);
 
   return (
-    <g className={`webnotes-table ${className ?? ""}`.trim()}>
+    <g className={`vellum-table ${className ?? ""}`.trim()}>
       {/* Optional Table Title */}
       {title && (
         <MathLabel
@@ -208,7 +208,7 @@ export function Table({
 
       {/* Row Totals (Right margin) */}
       {rowTotals && (
-        <g className="webnotes-table-row-totals">
+        <g className="vellum-table-row-totals">
           <Line x1={gridRight + 22} y1={y} x2={gridRight + 22} y2={gridBottom} tone="ink" weight="regular" />
           {rowTotals.map((totRaw, i) => {
             const cy = y + i * cellHeight + cellHeight / 2;
@@ -279,7 +279,7 @@ export function Table({
 
       {/* Column Totals (Bottom margin) */}
       {colTotals && (
-        <g className="webnotes-table-col-totals">
+        <g className="vellum-table-col-totals">
           <Line x1={x} y1={gridBottom + 22} x2={gridRight} y2={gridBottom + 22} tone="ink" weight="regular" />
           {colTotals.map((totRaw, j) => {
             const cx = x + j * cellWidth + cellWidth / 2;

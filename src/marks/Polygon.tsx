@@ -48,7 +48,7 @@ export function Polygon({
       stroke={strokeColor}
       strokeWidth={strokeWidth}
       strokeDasharray={strokeDasharray}
-      className={`webnotes-polygon ${className ?? ""}`.trim()}
+      className={`vellum-polygon ${className ?? ""}`.trim()}
     />
   );
 }

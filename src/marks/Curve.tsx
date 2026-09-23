@@ -73,7 +73,7 @@ export function Curve({
       strokeWidth={strokeWidth}
       strokeDasharray={strokeDasharray}
       opacity={opacity}
-      className={`webnotes-curve ${className ?? ""}`.trim()}
+      className={`vellum-curve ${className ?? ""}`.trim()}
     />
   );
 }

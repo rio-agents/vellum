@@ -39,12 +39,12 @@ export function Slider({
   const formatted = format ? format(value) : defaultFormatNumber(value, step);
 
   return (
-    <div className={`webnotes-control webnotes-control-slider ${className ?? ""}`.trim()}>
-      <div className="webnotes-control-slider__header">
-        <label htmlFor={inputId} className="webnotes-control-slider__label">
+    <div className={`vellum-control vellum-control-slider ${className ?? ""}`.trim()}>
+      <div className="vellum-control-slider__header">
+        <label htmlFor={inputId} className="vellum-control-slider__label">
           {label && (labelKind === "tex" ? <InlineTex tex={label} /> : <span>{label}</span>)}
         </label>
-        <output htmlFor={inputId} className="webnotes-control-slider__readout" aria-live="off">
+        <output htmlFor={inputId} className="vellum-control-slider__readout" aria-live="off">
           {formatted}
         </output>
       </div>
@@ -65,7 +65,7 @@ export function Slider({
             onChange(next);
           }
         }}
-        className="webnotes-control-slider__input"
+        className="vellum-control-slider__input"
       />
     </div>
   );

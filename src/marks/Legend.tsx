@@ -31,7 +31,7 @@ export function Legend({
   const theme = useTheme();
 
   return (
-    <g className={`webnotes-legend ${className ?? ""}`.trim()}>
+    <g className={`vellum-legend ${className ?? ""}`.trim()}>
       {entries.map((entry, idx) => {
         const itemY = y + idx * gap;
         const color = resolveTone(entry.tone, theme);

@@ -139,7 +139,7 @@ export function DragHandle({
       aria-label={label}
       aria-valuenow={point[0]}
       aria-valuetext={`(${point[0].toFixed(2)}, ${point[1].toFixed(2)})`}
-      className={`webnotes-drag-handle ${className ?? ""}`.trim()}
+      className={`vellum-drag-handle ${className ?? ""}`.trim()}
       transform={`translate(${px.toFixed(2)}, ${py.toFixed(2)})`}
       style={{
         cursor: isDragging ? "grabbing" : "grab",

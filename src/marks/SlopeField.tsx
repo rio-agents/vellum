@@ -73,7 +73,7 @@ export function SlopeField({
       strokeWidth={resolveWeight(weight, theme)}
       strokeLinecap="round"
       opacity={opacity}
-      className={`webnotes-slope-field ${className ?? ""}`.trim()}
+      className={`vellum-slope-field ${className ?? ""}`.trim()}
     />
   );
 }

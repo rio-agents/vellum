@@ -26,8 +26,8 @@ export function Toggle({
   const inputId = propId ?? (name ? `${generatedId}-${name}` : generatedId);
 
   return (
-    <div className={`webnotes-control webnotes-control-toggle ${className ?? ""}`.trim()}>
-      <label htmlFor={inputId} className="webnotes-control-toggle__label">
+    <div className={`vellum-control vellum-control-toggle ${className ?? ""}`.trim()}>
+      <label htmlFor={inputId} className="vellum-control-toggle__label">
         <input
           type="checkbox"
           id={inputId}
@@ -35,9 +35,9 @@ export function Toggle({
           checked={checked}
           disabled={disabled}
           onChange={(e) => onChange(e.target.checked)}
-          className="webnotes-control-toggle__input"
+          className="vellum-control-toggle__input"
         />
-        <span className="webnotes-control-toggle__text">
+        <span className="vellum-control-toggle__text">
           {label && (labelKind === "tex" ? <InlineTex tex={label} /> : label)}
         </span>
       </label>

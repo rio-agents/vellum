@@ -60,7 +60,7 @@ export function Controls<
   if (paramKeys.length === 0) return null;
 
   return (
-    <div className={`webnotes-figure-controls ${className ?? ""}`.trim()}>
+    <div className={`vellum-figure-controls ${className ?? ""}`.trim()}>
       {paramKeys.map((key) => {
         const config = schema[key] as AnyParamConfig;
         const val = (params as any)[key];

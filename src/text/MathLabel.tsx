@@ -63,7 +63,7 @@ export function MathLabel({
   if (!math) {
     return (
       <g
-        className={`webnotes-math-label ${className ?? ""}`.trim()}
+        className={`vellum-math-label ${className ?? ""}`.trim()}
         data-label-text={tex}
         data-display={display ? "true" : undefined}
         data-allow-overlap={allowOverlap ? "true" : undefined}
@@ -96,7 +96,7 @@ export function MathLabel({
 
   return (
     <g
-      className={`webnotes-math-label ${className ?? ""}`.trim()}
+      className={`vellum-math-label ${className ?? ""}`.trim()}
       data-label-text={tex}
       data-allow-overlap={allowOverlap ? "true" : undefined}
       transform={`translate(${finalX}, ${finalY})`}

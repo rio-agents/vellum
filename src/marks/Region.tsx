@@ -30,7 +30,7 @@ export function Region({
       to={[targetX[1], targetY[1]]}
       tone={tone}
       fillOpacity={fillOpacity}
-      className={`webnotes-region ${className ?? ""}`.trim()}
+      className={`vellum-region ${className ?? ""}`.trim()}
     />
   );
 }

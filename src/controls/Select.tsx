@@ -29,9 +29,9 @@ export function Select<T extends string = string>({
   const selectId = propId ?? (name ? `${generatedId}-${name}` : generatedId);
 
   return (
-    <div className={`webnotes-control webnotes-control-select ${className ?? ""}`.trim()}>
+    <div className={`vellum-control vellum-control-select ${className ?? ""}`.trim()}>
       {label && (
-        <label htmlFor={selectId} className="webnotes-control-select__label">
+        <label htmlFor={selectId} className="vellum-control-select__label">
           {labelKind === "tex" ? <InlineTex tex={label} /> : <span>{label}</span>}
         </label>
       )}
@@ -41,7 +41,7 @@ export function Select<T extends string = string>({
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value as T)}
-        className="webnotes-control-select__input"
+        className="vellum-control-select__input"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>

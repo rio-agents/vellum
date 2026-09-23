@@ -126,7 +126,7 @@ export function Panel({
           </clipPath>
         </defs>
       )}
-      <g className="webnotes-panel" clipPath={clip ? `url(#${clipId})` : undefined}>
+      <g className="vellum-panel" clipPath={clip ? `url(#${clipId})` : undefined}>
         {children}
       </g>
     </FrameContext.Provider>

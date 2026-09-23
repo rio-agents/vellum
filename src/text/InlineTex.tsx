@@ -26,7 +26,7 @@ export function InlineTex({ tex, size = 15, style, className }: InlineTexProps) 
   }, [tex, initialMath]);
 
   if (!math) {
-    return <span className={`webnotes-inline-tex ${className ?? ""}`.trim()} style={style}>{tex}</span>;
+    return <span className={`vellum-inline-tex ${className ?? ""}`.trim()} style={style}>{tex}</span>;
   }
 
   const widthPx = Number((math.widthEm * size).toFixed(2));
@@ -34,7 +34,7 @@ export function InlineTex({ tex, size = 15, style, className }: InlineTexProps) 
 
   return (
     <span
-      className={`webnotes-inline-tex ${className ?? ""}`.trim()}
+      className={`vellum-inline-tex ${className ?? ""}`.trim()}
       style={{
         display: "inline-flex",
         alignItems: "center",

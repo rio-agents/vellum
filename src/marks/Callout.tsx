@@ -37,7 +37,7 @@ export function Callout({
   const [x2, y2] = frame.toPx(to);
 
   return (
-    <g className={`webnotes-callout ${className ?? ""}`.trim()}>
+    <g className={`vellum-callout ${className ?? ""}`.trim()}>
       <line
         x1={x1}
         y1={y1}

@@ -81,7 +81,7 @@ export function Axes({
   const formatY = tickFormatY ?? sy.tickFormat(typeof ticksY === "number" ? ticksY : 5);
 
   return (
-    <g className="webnotes-axes">
+    <g className="vellum-axes">
       {/* Horizontal X Axis */}
       <line
         x1={xStartPx}

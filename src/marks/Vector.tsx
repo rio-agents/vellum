@@ -51,7 +51,7 @@ export function Vector({
   const anchor = labelAnchor ?? defaultAnchor;
 
   return (
-    <g className={`webnotes-vector ${className ?? ""}`.trim()}>
+    <g className={`vellum-vector ${className ?? ""}`.trim()}>
       <Arrow
         from={from}
         to={to}

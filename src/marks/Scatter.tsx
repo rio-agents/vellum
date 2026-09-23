@@ -47,7 +47,7 @@ export function Scatter({
     : points;
 
   return (
-    <g className={`webnotes-scatter ${className ?? ""}`.trim()}>
+    <g className={`vellum-scatter ${className ?? ""}`.trim()}>
       {activePoints.map(([x, y], idx) => {
         const [px, py] = toPx([x, y]);
         const fill = pointTone ? resolveTone(pointTone([x, y], idx), theme) : defaultFillColor;

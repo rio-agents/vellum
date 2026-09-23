@@ -50,7 +50,7 @@ export async function loadClientTex(
 }
 
 export function harvestMathFromSvg(container: ParentNode): void {
-  const labelGroups = container.querySelectorAll(".webnotes-math-label");
+  const labelGroups = container.querySelectorAll(".vellum-math-label");
   for (const g of labelGroups) {
     const tex = g.getAttribute("data-label-text");
     if (!tex) continue;

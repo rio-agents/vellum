@@ -69,7 +69,7 @@ export function Arrow({
       markerStart={markerStart ? markerUrl : undefined}
       markerEnd={markerEnd ? markerUrl : undefined}
       opacity={opacity}
-      className={`webnotes-arrow ${className ?? ""}`.trim()}
+      className={`vellum-arrow ${className ?? ""}`.trim()}
     />
   );
 }

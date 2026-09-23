@@ -90,7 +90,7 @@ export function Area({
       fillOpacity={opacity}
       stroke={strokeColor}
       strokeWidth={strokeWidth}
-      className={`webnotes-area ${className ?? ""}`.trim()}
+      className={`vellum-area ${className ?? ""}`.trim()}
     />
   );
 }

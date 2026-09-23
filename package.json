@@ -1,5 +1,5 @@
 {
-  "name": "@webnotes/figures",
+  "name": "@rio-agents/vellum",
   "version": "0.0.1",
   "type": "module",
   "exports": {

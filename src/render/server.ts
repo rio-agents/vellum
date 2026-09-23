@@ -62,7 +62,7 @@ export function renderToSvgString(
               "g",
               {
                 key: `param-math-${key}`,
-                className: "webnotes-math-label",
+                className: "vellum-math-label",
                 "data-label-text": p.label,
                 "data-width-em": math.widthEm,
                 "data-height-em": math.heightEm,
@@ -87,7 +87,7 @@ export function renderToSvgString(
 
   if (paramDefs.length > 0) {
     const defsString = renderToStaticMarkup(
-      React.createElement("defs", { className: "webnotes-figure-param-defs" }, ...paramDefs)
+      React.createElement("defs", { className: "vellum-figure-param-defs" }, ...paramDefs)
     );
     svg = svg.replace("</svg>", `${defsString}</svg>`);
   }

@@ -114,7 +114,7 @@ export function Line({
       strokeWidth={strokeWidth}
       strokeDasharray={strokeDasharray}
       opacity={opacity}
-      className={`webnotes-line ${className ?? ""}`.trim()}
+      className={`vellum-line ${className ?? ""}`.trim()}
     />
   );
 }

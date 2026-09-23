@@ -68,7 +68,7 @@ export function Bars({
   const basePy = sy(baseline);
 
   return (
-    <g className={`webnotes-bars ${className ?? ""}`.trim()}>
+    <g className={`vellum-bars ${className ?? ""}`.trim()}>
       {items.map((item, idx) => {
         const w = item.width ?? defWidth!;
         const halfW = w / 2;

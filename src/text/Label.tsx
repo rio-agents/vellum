@@ -108,7 +108,7 @@ export function Label({
 
   return (
     <text
-      className={`webnotes-text-label ${className ?? ""}`.trim()}
+      className={`vellum-text-label ${className ?? ""}`.trim()}
       data-label-text={text}
       data-allow-overlap={allowOverlap ? "true" : undefined}
       x={finalX}

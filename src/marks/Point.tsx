@@ -43,7 +43,7 @@ export function Point({
   const strokeWidth = resolveWeight(strokeWeight, theme);
 
   return (
-    <g className={`webnotes-point ${className ?? ""}`.trim()}>
+    <g className={`vellum-point ${className ?? ""}`.trim()}>
       <circle
         cx={px}
         cy={py}

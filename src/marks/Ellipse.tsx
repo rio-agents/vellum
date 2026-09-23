@@ -81,7 +81,7 @@ export function Ellipse({
       stroke={strokeColor}
       strokeWidth={strokeWidth}
       strokeDasharray={strokeDasharray}
-      className={`webnotes-ellipse ${className ?? ""}`.trim()}
+      className={`vellum-ellipse ${className ?? ""}`.trim()}
     />
   );
 }
