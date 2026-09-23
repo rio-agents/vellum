@@ -1,12 +1,11 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ThemeProvider } from "../theme/index.ts";
 import { defaultTheme } from "../theme/default-theme.ts";
 import type { FigureTheme } from "../theme/types.ts";
-import type { FigureDefinition } from "../define.ts";
+import type { FigureDefinition, FigureLayout } from "../define.ts";
 import type { AnyParamConfig } from "../params/types.ts";
 import { resolveDefaultParams } from "../params/index.ts";
-import { FigureDefinitionContext } from "../scene/Figure.tsx";
+import { renderFigureLayout } from "./scope.tsx";
 import { texToSvg } from "../text/tex.ts";
 import { registerSyncTexResolver, makeCacheKey } from "../text/tex-resolver.ts";
 
@@ -16,6 +15,9 @@ export interface RenderServerOptions {
   theme?: FigureTheme;
   params?: Record<string, unknown>;
   time?: number;
+  layout?: FigureLayout;
+  /** Asset name used to scope SVG IDs; defaults to the definition id. */
+  asset?: string;
 }
 
 export function renderToSvgString(
@@ -37,16 +39,20 @@ export function renderToSvgString(
       (definition.params as Record<string, AnyParamConfig> | undefined)?.time?.default ??
       0);
 
-  const element = definition.render({
-    params: resolvedParams as any,
-    derived: derived as any,
+  const layout = options.layout ?? "wide";
+  const element = renderFigureLayout(definition, {
+    asset: options.asset ?? definition.id,
+    layout,
+    params: resolvedParams as Record<string, unknown>,
+    derived: derived as Record<string, unknown>,
     theme,
     time: typeof time === "number" ? time : 0,
   });
 
-  // Pre-render parameter TeX labels into hidden defs so client can harvest without loading MathJax
+  // Pre-render parameter TeX labels into hidden defs so the client can harvest them
+  // without loading MathJax. The wide SVG carries them for the whole figure element.
   const paramDefs: React.ReactNode[] = [];
-  if (definition.params) {
+  if (definition.params && layout === "wide") {
     for (const [key, p] of Object.entries(definition.params as Record<string, AnyParamConfig>)) {
       if (p.label && p.labelKind !== "text") {
         try {
@@ -77,13 +83,7 @@ export function renderToSvgString(
     }
   }
 
-  const wrapped = React.createElement(
-    FigureDefinitionContext.Provider,
-    { value: definition },
-    React.createElement(ThemeProvider, { theme }, element)
-  );
-
-  let svg = renderToStaticMarkup(wrapped);
+  let svg = renderToStaticMarkup(element);
 
   if (paramDefs.length > 0) {
     const defsString = renderToStaticMarkup(

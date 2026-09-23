@@ -13,6 +13,7 @@ import {
 } from "../src/params/index.ts";
 import { defaultFormatNumber } from "../src/controls/format.ts";
 import { defineFigure } from "../src/define.ts";
+import { isInteractive } from "../src/render/assets.ts";
 import {
   texCache,
   makeCacheKey,
@@ -40,38 +41,29 @@ test("interactivity: manifest correctly flags interactive and static figures", (
 });
 
 test("interactivity: exposed parameters detection logic", () => {
-  function checkInteractive(def: any): boolean {
-    return Boolean(
-      def.params &&
-        Object.entries(def.params).some(
-          ([key, p]: [string, any]) => !p?.hidden && !def.controls?.hidden?.includes(key)
-        )
-    );
-  }
-
   const staticDef = defineFigure({
     id: "fig-static",
     description: "static",
-    size: { width: 100, height: 100 },
+    layouts: { wide: { width: 100, height: 100 } },
     render: () => null,
   });
-  assert.equal(checkInteractive(staticDef), false);
+  assert.equal(isInteractive(staticDef), false);
 
   const hiddenParamDef = defineFigure({
     id: "fig-hidden",
     description: "hidden",
-    size: { width: 100, height: 100 },
+    layouts: { wide: { width: 100, height: 100 } },
     params: {
       seed: param.number({ default: 42, hidden: true }),
     },
     render: () => null,
   });
-  assert.equal(checkInteractive(hiddenParamDef), false);
+  assert.equal(isInteractive(hiddenParamDef), false);
 
   const controlsHiddenDef = defineFigure({
     id: "fig-ctl-hidden",
     description: "ctl hidden",
-    size: { width: 100, height: 100 },
+    layouts: { wide: { width: 100, height: 100 } },
     params: {
       alpha: param.number({ default: 1 }),
     },
@@ -80,19 +72,19 @@ test("interactivity: exposed parameters detection logic", () => {
     },
     render: () => null,
   });
-  assert.equal(checkInteractive(controlsHiddenDef), false);
+  assert.equal(isInteractive(controlsHiddenDef), false);
 
   const interactiveDef = defineFigure({
     id: "fig-interactive",
     description: "interactive",
-    size: { width: 100, height: 100 },
+    layouts: { wide: { width: 100, height: 100 } },
     params: {
       alpha: param.number({ default: 1 }),
       beta: param.number({ default: 2, hidden: true }),
     },
     render: () => null,
   });
-  assert.equal(checkInteractive(interactiveDef), true);
+  assert.equal(isInteractive(interactiveDef), true);
 });
 
 test("interactivity: number formatting and rounding helper", () => {
@@ -215,7 +207,7 @@ test("interactivity: unique mounted control IDs across multiple instances with i
       const def1 = defineFigure({
         id: "fig-copy-1",
         description: "copy 1",
-        size: { width: 100, height: 100 },
+        layouts: { wide: { width: 100, height: 100 } },
         params: {
           s1: param.number({ default: 1, label: "Scale" }),
           active: param.boolean({ default: true, label: "Active" }),
@@ -234,7 +226,7 @@ test("interactivity: unique mounted control IDs across multiple instances with i
       const def2 = defineFigure({
         id: "fig-copy-2",
         description: "copy 2",
-        size: { width: 100, height: 100 },
+        layouts: { wide: { width: 100, height: 100 } },
         params: {
           s1: param.number({ default: 2, label: "Scale" }),
           active: param.boolean({ default: false, label: "Active" }),
@@ -360,7 +352,7 @@ test("interactivity: server render uses shared parameter sanitizer identical to 
       const def = defineFigure({
         id: "server-sanitizer-test",
         description: "test",
-        size: { width: 100, height: 100 },
+        layouts: { wide: { width: 100, height: 100 } },
         params: {
           num: param.number({ min: 1, max: 5, step: 0.5, default: 2 }),
           flag: param.boolean({ default: false }),

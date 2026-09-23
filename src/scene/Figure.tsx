@@ -1,82 +1,53 @@
 import React, { type ReactNode, type CSSProperties, createContext, useContext } from "react";
 import { MarkerDefs } from "../marks/markers.tsx";
 import { useTheme } from "../theme/index.ts";
+import type { FigureLayout, FigureSize } from "../define.ts";
+
+/** What a renderer tells `Figure` about the SVG it is drawing. */
+export interface FigureScope {
+  /** Prefix for every SVG ID in this drawing; unique per asset and layout. */
+  id: string;
+  layout: FigureLayout;
+  size: FigureSize;
+  description: string;
+}
+
+export const FigureScopeContext = createContext<FigureScope | null>(null);
+
+export function useFigureScope(): FigureScope {
+  const scope = useContext(FigureScopeContext);
+  if (!scope) {
+    throw new Error("Figure content must be rendered through renderToSvgString or mountFigure.");
+  }
+  return scope;
+}
 
 export interface FigureProps {
-  id?: string;
-  description?: string;
-  size?: { width: number; height: number };
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
 }
 
-export interface FigureDefinitionContextValue {
-  id?: string;
-  description?: string;
-  size?: { width: number; height: number };
-}
-
-export const FigureDefinitionContext = createContext<FigureDefinitionContextValue>({});
-
-export function useFigureDefinition(): FigureDefinitionContextValue {
-  return useContext(FigureDefinitionContext);
-}
-
-interface FigureContextValue {
-  id: string;
-  width: number;
-  height: number;
-}
-
-const FigureContext = createContext<FigureContextValue>({
-  id: "figure",
-  width: 720,
-  height: 460,
-});
-
-export function useFigureContext(): FigureContextValue {
-  return useContext(FigureContext);
-}
-
-export function Figure({
-  id: propId,
-  description: propDescription,
-  size: propSize,
-  children,
-  className,
-  style,
-}: FigureProps) {
-  const def = useFigureDefinition();
+export function Figure({ children, className, style }: FigureProps) {
+  const { layout, size, description } = useFigureScope();
   const theme = useTheme();
 
-  const id = propId ?? def.id ?? "figure";
-  const description = propDescription ?? def.description;
-  const size = propSize ?? def.size ?? { width: 720, height: 460 };
-  const { width, height } = size;
-
   return (
-    <FigureContext.Provider value={{ id, width, height }}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label={description ?? "Mathematical figure"}
-        className={`webnotes-figure-svg ${className ?? ""}`.trim()}
-        style={{
-          width: "100%",
-          height: "auto",
-          display: "block",
-          fontFamily: theme.font.sans,
-          ...style,
-        }}
-      >
-        {description && <title>{description}</title>}
-        <defs>
-          <MarkerDefs />
-        </defs>
-        {children}
-      </svg>
-    </FigureContext.Provider>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox={`0 0 ${size.width} ${size.height}`}
+      role="img"
+      aria-label={description}
+      data-layout={layout}
+      className={`webnotes-figure-svg ${className ?? ""}`.trim()}
+      // Sizing and visibility belong to the page's CSS, which chooses between layouts.
+      style={{ fontFamily: theme.font.sans, ...style }}
+    >
+      <title>{description}</title>
+      <defs>
+        <MarkerDefs />
+      </defs>
+      {children}
+    </svg>
   );
 }

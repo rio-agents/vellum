@@ -3,7 +3,8 @@ import { useFrameSafe } from "../scene/frame-context.ts";
 import { requireFrame } from "../scene/position.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
 import { resolveWeight, resolveDash, type Weight, type Dash } from "./style-helpers.ts";
-import { getArrowMarkerUrl } from "./markers.tsx";
+import { arrowMarkerId } from "./markers.tsx";
+import { useFigureScope } from "../scene/Figure.tsx";
 
 /** Data endpoints `from`/`to`, or figure-pixel endpoints `x1`/`y1`/`x2`/`y2`. */
 export type ArrowGeometry =
@@ -37,6 +38,7 @@ export function Arrow({
 }: ArrowProps) {
   const frame = useFrameSafe();
   const theme = useTheme();
+  const { id: figureId } = useFigureScope();
 
   const strokeColor = resolveTone(tone, theme);
   const strokeWidth = resolveWeight(weight, theme);
@@ -53,7 +55,7 @@ export function Arrow({
     throw new Error("Arrow: needs `from`/`to` (data coordinates) or `x1`/`y1`/`x2`/`y2` (figure pixels).");
   }
 
-  const markerUrl = getArrowMarkerUrl(tone);
+  const markerUrl = `url(#${arrowMarkerId(figureId, tone)})`;
 
   return (
     <line

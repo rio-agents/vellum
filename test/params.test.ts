@@ -101,7 +101,7 @@ test("defineFigure parameter types flow into derive and render", () => {
   const def = defineFigure({
     id: "typed-test",
     description: "test",
-    size: { width: 500, height: 300 },
+    layouts: { wide: { width: 500, height: 300 } },
     params: {
       s1: param.number({ default: 0.837, min: 0.1, max: 2 }),
       tag: param.choice({

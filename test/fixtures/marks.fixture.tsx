@@ -1,6 +1,6 @@
 import React, { type ReactNode } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import "../../src/render/server.ts";
+import { renderToSvgString } from "../../src/render/server.ts";
+import { defineFigure } from "../../src/define.ts";
 import { Figure } from "../../src/scene/Figure.tsx";
 import { Panel } from "../../src/scene/Panel.tsx";
 import { Axes } from "../../src/marks/Axes.tsx";
@@ -11,19 +11,24 @@ import { Line } from "../../src/marks/Line.tsx";
 import { Arrow } from "../../src/marks/Arrow.tsx";
 import { Rect } from "../../src/marks/Rect.tsx";
 
-/** Renders children directly in the figure, outside any panel. */
+/** Renders children directly in a 600 x 300 figure, outside any panel. */
 function inFigure(children: ReactNode): string {
-  return renderToStaticMarkup(<Figure size={{ width: 600, height: 300 }}>{children}</Figure>);
+  return renderToSvgString(
+    defineFigure({
+      id: "fixture",
+      description: "fixture",
+      layouts: { wide: { width: 600, height: 300 } },
+      render: () => <Figure>{children}</Figure>,
+    })
+  );
 }
 
 /** Renders children inside a 400 x 200 panel at (100, 50) with domain [0, 10] x [0, 5]. */
 function inPanel(children: ReactNode): string {
-  return renderToStaticMarkup(
-    <Figure size={{ width: 600, height: 300 }}>
-      <Panel area={{ x: 100, y: 50, width: 400, height: 200 }} x={[0, 10]} y={[0, 5]}>
-        {children}
-      </Panel>
-    </Figure>
+  return inFigure(
+    <Panel area={{ x: 100, y: 50, width: 400, height: 200 }} x={[0, 10]} y={[0, 5]}>
+      {children}
+    </Panel>
   );
 }
 
@@ -58,13 +63,13 @@ export const rectPixelsInFigure = () => inFigure(<Rect x={10} y={20} width={30} 
 export const rectOutline = () => inPanel(<Rect from={[2, 1]} to={[4, 3]} fillOpacity={0} strokeTone="ink" />);
 
 export const twoClippedPanels = () =>
-  renderToStaticMarkup(
-    <Figure size={{ width: 600, height: 300 }}>
+  inFigure(
+    <>
       <Panel area={{ x: 0, y: 0, width: 300, height: 300 }} x={[0, 1]} y={[0, 1]} clip>
         <Label text="left" at={[0.5, 0.5]} />
       </Panel>
       <Panel area={{ x: 300, y: 0, width: 300, height: 300 }} x={[0, 1]} y={[0, 1]} clip>
         <Label text="right" at={[0.5, 0.5]} />
       </Panel>
-    </Figure>
+    </>
   );

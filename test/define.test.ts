@@ -6,7 +6,7 @@ test("defineFigure returns definition unchanged and accepts typed schema", () =>
   const def = defineFigure({
     id: "test-figure",
     description: "test description",
-    size: { width: 100, height: 100 },
+    layouts: { wide: { width: 100, height: 100 } },
     params: {
       a: { type: "number", default: 42 },
     },

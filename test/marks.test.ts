@@ -1,29 +1,12 @@
 import { before, describe, it } from "node:test";
 import assert from "node:assert/strict";
-import path from "node:path";
-import { mkdir, rm } from "node:fs/promises";
-import { pathToFileURL } from "node:url";
-import * as esbuild from "esbuild";
-
-const root = process.cwd().endsWith("packages/figures") ? path.resolve(process.cwd(), "../..") : process.cwd();
+import { importFixture } from "./bundle-fixture.ts";
 
 type Fixture = Record<string, () => string>;
 let fixture: Fixture;
 
 before(async () => {
-  const outDir = path.join(root, ".astro/figures-marks-test");
-  await mkdir(outDir, { recursive: true });
-  const outfile = path.join(outDir, `marks-${Date.now()}.mjs`);
-  await esbuild.build({
-    entryPoints: [path.join(root, "packages/figures/test/fixtures/marks.fixture.tsx")],
-    bundle: true,
-    platform: "node",
-    format: "esm",
-    outfile,
-    external: ["react", "react-dom", "react-dom/*", "react/jsx-runtime", "react/jsx-dev-runtime"],
-  });
-  fixture = await import(pathToFileURL(outfile).href);
-  await rm(outDir, { recursive: true, force: true });
+  fixture = await importFixture<Fixture>("marks");
 });
 
 const attribute = (markup: string, labelText: string, name: string) => {

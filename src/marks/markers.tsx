@@ -1,5 +1,6 @@
 import React from "react";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
+import { useFigureScope } from "../scene/Figure.tsx";
 
 export const STANDARD_TONES: Tone[] = [
   "ink",
@@ -15,24 +16,21 @@ export const STANDARD_TONES: Tone[] = [
   "series6",
 ];
 
-export function getArrowMarkerId(tone: Tone = "ink"): string {
-  const safeTone = tone.replace(/[^a-zA-Z0-9_-]/g, "");
-  return `fig-arrow-${safeTone}`;
-}
-
-export function getArrowMarkerUrl(tone: Tone = "ink"): string {
-  return `url(#${getArrowMarkerId(tone)})`;
+/** Arrowhead marker IDs are scoped to one SVG so a hidden sibling SVG never supplies them. */
+export function arrowMarkerId(figureId: string, tone: Tone): string {
+  return `${figureId}-arrow-${tone}`;
 }
 
 export function MarkerDefs() {
   const theme = useTheme();
+  const { id: figureId } = useFigureScope();
 
   return (
     <>
       {STANDARD_TONES.map((tone) => (
         <marker
           key={tone}
-          id={getArrowMarkerId(tone)}
+          id={arrowMarkerId(figureId, tone)}
           viewBox="0 0 12 12"
           refX="10"
           refY="6"

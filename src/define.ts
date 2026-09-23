@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { FigureTheme } from "./theme/types.ts";
-import type { FigureParamsSchema, InferParamsValues, AnyParamConfig } from "./params/types.ts";
+import type { FigureParamsSchema, InferParamsValues } from "./params/types.ts";
 
 export interface FigureControlsConfig {
   order?: string[];
@@ -14,6 +14,23 @@ export interface FigurePlayerConfig {
   fps?: number;
 }
 
+/**
+ * A fixed composition size. `wide` is drawn at prose width; `compact` is the phone
+ * composition, shown when the figure's container is narrower than the wide layout
+ * can keep legible.
+ */
+export type FigureLayout = "wide" | "compact";
+
+export interface FigureSize {
+  width: number;
+  height: number;
+}
+
+export interface FigureLayouts {
+  wide: FigureSize;
+  compact?: FigureSize;
+}
+
 export interface RenderContext<
   Params = Record<string, unknown>,
   Derived = Record<string, unknown>
@@ -22,6 +39,10 @@ export interface RenderContext<
   derived: Derived;
   theme: FigureTheme;
   time: number;
+  /** The layout being drawn; the definition's `render` is called once per declared layout. */
+  layout: FigureLayout;
+  /** The size of the layout being drawn. */
+  size: FigureSize;
 }
 
 export interface FigureDefinition<
@@ -30,8 +51,13 @@ export interface FigureDefinition<
 > {
   id: string;
   description: string;
-  size: { width: number; height: number };
+  layouts: FigureLayouts;
   params?: P;
+  /**
+   * Fixed parameter settings, each rendered as its own asset `<id>--<variant>`.
+   * A definition with variants has no bare `<id>` asset.
+   */
+  variants?: Record<string, Partial<InferParamsValues<P>>>;
   derive?: (params: InferParamsValues<P>) => D;
   render: (ctx: RenderContext<InferParamsValues<P>, D>) => ReactNode;
   controls?: FigureControlsConfig;

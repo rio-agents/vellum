@@ -1,7 +1,7 @@
 import React, { type ReactNode, useId } from "react";
 import { scaleLinear } from "../math/scale.ts";
 import { FrameContext, type FrameContextValue } from "./frame-context.ts";
-import { useFigureContext } from "./Figure.tsx";
+import { useFigureScope } from "./Figure.tsx";
 import type { RectArea } from "./layout.ts";
 
 export interface PanelPadding {
@@ -30,7 +30,7 @@ export function Panel({
   padding = 0,
   children,
 }: PanelProps) {
-  const figure = useFigureContext();
+  const figure = useFigureScope();
 
   const padTop = typeof padding === "number" ? padding : (padding.top ?? 0);
   const padRight = typeof padding === "number" ? padding : (padding.right ?? 0);
