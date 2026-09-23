@@ -38,3 +38,4 @@ A mark written for one figure should stay beside that figure. Move it into the l
 - Add focused tests for a new mark, helper, or option, and document it in the matching file under `docs/`.
 - Do not keep old forms of an API alongside new ones: no aliases, shims, or deprecated props. Change the API, update the examples and docs in the same change, and record the break in [CHANGELOG.md](CHANGELOG.md). Before 1.0, a breaking change bumps the minor version.
 - The command-line code under `src/build/` runs through Node's type stripping, so it must import only `.ts` files, never `.tsx`.
+- Planned work is in [plans/roadmap.md](plans/roadmap.md). Start an item only when asked, and remove it once it is done.
