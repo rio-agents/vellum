@@ -4,6 +4,7 @@ import type { TexSvgResult } from "./tex.ts";
 import { computeBoxOffset, type Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
 import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
+import { HALO_PX } from "./Label.tsx";
 
 export interface MathLabelProps {
   tex: string;
@@ -17,6 +18,8 @@ export interface MathLabelProps {
   size?: number | TextRole;
   display?: boolean;
   allowOverlap?: boolean;
+  /** Outline the text in the figure surface color so it stays legible over marks. */
+  halo?: boolean;
   style?: CSSProperties;
   className?: string;
 }
@@ -33,6 +36,7 @@ export function MathLabel({
   size: propSize,
   display = false,
   allowOverlap = false,
+  halo = false,
   style,
   className,
 }: MathLabelProps) {
@@ -99,6 +103,17 @@ export function MathLabel({
   const roundedW = Number(widthPx.toFixed(2));
   const roundedH = Number(heightPx.toFixed(2));
 
+  // A surface-colored copy of the glyphs, widened by a stroke, sits under
+  // the label. MathJax sets its own stroke attributes, so they are rewritten
+  // on the copy; the outline width is converted from pixels to glyph units.
+  const haloWidth = (2 * HALO_PX * Number(math.viewBox.split(/\s+/)[2])) / roundedW;
+  const haloInner = halo
+    ? math.inner
+        .replaceAll('stroke="currentColor"', `stroke="${theme.color.surface}"`)
+        .replaceAll('fill="currentColor"', `fill="${theme.color.surface}"`)
+        .replaceAll('stroke-width="0"', `stroke-width="${Number(haloWidth.toFixed(2))}" stroke-linejoin="round"`)
+    : undefined;
+
   return (
     <g
       className={`webnotes-math-label ${className ?? ""}`.trim()}
@@ -107,6 +122,17 @@ export function MathLabel({
       transform={`translate(${finalX}, ${finalY})`}
       style={{ color: toneColor, fill: "currentColor", ...style }}
     >
+      {haloInner && (
+        <svg
+          width={roundedW}
+          height={roundedH}
+          viewBox={math.viewBox}
+          overflow="visible"
+          style={{ display: "block" }}
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: haloInner }}
+        />
+      )}
       <svg
         width={roundedW}
         height={roundedH}

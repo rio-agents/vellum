@@ -119,8 +119,8 @@ export function Axes({
               {showTickLabels && (
                 <Label
                   text={formatX(val)}
-                  x={px}
-                  y={pxOy + tLen + 2}
+                  at={[val, oy]}
+                  offset={[0, tLen + 2]}
                   anchor="n"
                   fontSize={theme.text.tick}
                   tone="muted"
@@ -147,8 +147,8 @@ export function Axes({
               {showTickLabels && (
                 <Label
                   text={formatY(val)}
-                  x={pxOx - tLen - 3}
-                  y={py}
+                  at={[ox, val]}
+                  offset={[-(tLen + 3), 0]}
                   anchor="e"
                   fontSize={theme.text.tick}
                   tone="muted"
@@ -163,8 +163,8 @@ export function Axes({
         (xLabelKind === "tex" ? (
           <MathLabel
             tex={xLabel}
-            x={xEndPx + 10}
-            y={pxOy}
+            at={[xDomain[1], oy]}
+            offset={[10, 0]}
             anchor="w"
             fontSize={theme.text.label}
             tone="ink"
@@ -172,8 +172,8 @@ export function Axes({
         ) : (
           <Label
             text={xLabel}
-            x={xEndPx + 10}
-            y={pxOy}
+            at={[xDomain[1], oy]}
+            offset={[10, 0]}
             anchor="w"
             fontSize={theme.text.label}
             tone="ink"
@@ -184,8 +184,8 @@ export function Axes({
         (yLabelKind === "tex" ? (
           <MathLabel
             tex={yLabel}
-            x={pxOx}
-            y={yEndPx - 10}
+            at={[ox, yDomain[1]]}
+            offset={[0, -10]}
             anchor="s"
             fontSize={theme.text.label}
             tone="ink"
@@ -193,8 +193,8 @@ export function Axes({
         ) : (
           <Label
             text={yLabel}
-            x={pxOx}
-            y={yEndPx - 10}
+            at={[ox, yDomain[1]]}
+            offset={[0, -10]}
             anchor="s"
             fontSize={theme.text.label}
             tone="ink"

@@ -17,6 +17,8 @@ export interface LabelProps {
   fontWeight?: number | string;
   letterSpacing?: number | string;
   allowOverlap?: boolean;
+  /** Outline the text in the figure surface color so it stays legible over marks. */
+  halo?: boolean;
   style?: CSSProperties;
   className?: string;
 }
@@ -70,6 +72,9 @@ function anchorToSvgAlignment(anchor: Anchor): {
   return { textAnchor, dominantBaseline };
 }
 
+/** Outline width, in pixels, on each side of a haloed label's glyphs. */
+export const HALO_PX = 3;
+
 export function Label({
   text,
   at,
@@ -84,6 +89,7 @@ export function Label({
   fontWeight,
   letterSpacing,
   allowOverlap = false,
+  halo = false,
   style,
   className,
 }: LabelProps) {
@@ -134,6 +140,10 @@ export function Label({
       fontFamily={face}
       fontWeight={fontWeight}
       letterSpacing={letterSpacing}
+      stroke={halo ? theme.color.surface : undefined}
+      strokeWidth={halo ? 2 * HALO_PX : undefined}
+      strokeLinejoin={halo ? "round" : undefined}
+      paintOrder={halo ? "stroke" : undefined}
       style={style}
     >
       {text}
