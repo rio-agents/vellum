@@ -11,7 +11,6 @@ export interface FrameContextValue {
   sy: LinearScale;
   pxPerUnit: { x: number; y: number };
   clipId?: string;
-  panelIndex: number;
 }
 
 export const FrameContext = createContext<FrameContextValue | null>(null);

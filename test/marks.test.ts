@@ -116,3 +116,13 @@ describe("Coordinate rule", () => {
     assert.equal(outline("fill-opacity"), undefined);
   });
 });
+
+describe("Panel clipping", () => {
+  it("gives every clipped panel its own clip path", () => {
+    const markup = fixture.twoClippedPanels();
+    const defined = [...markup.matchAll(/<clipPath id="([^"]+)"/g)].map((m) => m[1]);
+    const used = [...markup.matchAll(/clip-path="url\(#([^)]+)\)"/g)].map((m) => m[1]);
+    assert.equal(new Set(defined).size, 2);
+    assert.deepEqual(used, defined);
+  });
+});

@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, useId } from "react";
 import { scaleLinear } from "../math/scale.ts";
 import { FrameContext, type FrameContextValue } from "./frame-context.ts";
 import { useFigureContext } from "./Figure.tsx";
@@ -18,7 +18,6 @@ export interface PanelProps {
   aspect?: "equal" | "auto";
   clip?: boolean;
   padding?: number | PanelPadding;
-  panelIndex?: number;
   children: ReactNode;
 }
 
@@ -29,7 +28,6 @@ export function Panel({
   aspect = "auto",
   clip = false,
   padding = 0,
-  panelIndex = 0,
   children,
 }: PanelProps) {
   const figure = useFigureContext();
@@ -94,7 +92,8 @@ export function Panel({
     y: effH / (deltaY || 1),
   };
 
-  const clipId = `${figure.id}-panel-${panelIndex}-clip`;
+  // Unique per panel without author bookkeeping; React IDs are deterministic in static rendering.
+  const clipId = `${figure.id}-clip-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
   const frameValue: FrameContextValue = {
     area: {
@@ -111,7 +110,6 @@ export function Panel({
     sy,
     pxPerUnit,
     clipId: clip ? clipId : undefined,
-    panelIndex,
   };
 
   return (
@@ -128,7 +126,7 @@ export function Panel({
           </clipPath>
         </defs>
       )}
-      <g className={`webnotes-panel webnotes-panel-${panelIndex}`} clipPath={clip ? `url(#${clipId})` : undefined}>
+      <g className="webnotes-panel" clipPath={clip ? `url(#${clipId})` : undefined}>
         {children}
       </g>
     </FrameContext.Provider>

@@ -56,3 +56,15 @@ export const arrowDataInFigure = () => inFigure(<Arrow from={[0, 0]} to={[1, 1]}
 export const rectCornersInPanel = () => inPanel(<Rect from={[2, 1]} to={[4, 3]} />);
 export const rectPixelsInFigure = () => inFigure(<Rect x={10} y={20} width={30} height={40} />);
 export const rectOutline = () => inPanel(<Rect from={[2, 1]} to={[4, 3]} fillOpacity={0} strokeTone="ink" />);
+
+export const twoClippedPanels = () =>
+  renderToStaticMarkup(
+    <Figure size={{ width: 600, height: 300 }}>
+      <Panel area={{ x: 0, y: 0, width: 300, height: 300 }} x={[0, 1]} y={[0, 1]} clip>
+        <Label text="left" at={[0.5, 0.5]} />
+      </Panel>
+      <Panel area={{ x: 300, y: 0, width: 300, height: 300 }} x={[0, 1]} y={[0, 1]} clip>
+        <Label text="right" at={[0.5, 0.5]} />
+      </Panel>
+    </Figure>
+  );
