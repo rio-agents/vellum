@@ -2,12 +2,17 @@
   "name": "@rio-agents/vellum",
   "version": "0.0.1",
   "type": "module",
+  "bin": {
+    "vellum": "./bin/vellum.mjs"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./math": "./src/math/index.ts",
     "./theme": "./src/theme/index.ts",
     "./render/server": "./src/render/server.ts",
-    "./render/client": "./src/render/client.tsx"
+    "./render/client": "./src/render/client.tsx",
+    "./build": "./src/build/index.ts",
+    "./manifest": "./src/build/manifest.ts"
   },
   "scripts": {
     "test": "node --experimental-strip-types --test test/*.test.ts",
@@ -16,6 +21,7 @@
   "dependencies": {
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
+    "esbuild": "^0.25.0",
     "mathjax-full": "^3.2.2"
   },
   "devDependencies": {
@@ -24,7 +30,6 @@
     "@types/node": "^26.6.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "esbuild": "^0.25.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "typescript": "^5.8.3"
