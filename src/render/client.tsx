@@ -22,7 +22,7 @@ export interface MountedFigureInstance {
 }
 
 interface InteractiveFigureProps {
-  definition: FigureDefinition<any, any>;
+  definition: FigureDefinition<any, any, any>;
   asset: string;
   theme: FigureTheme;
   initialParams?: Record<string, unknown>;
@@ -52,7 +52,7 @@ let instanceCounter = 0;
 
 export function mountFigure(
   element: HTMLElement,
-  definition: FigureDefinition<any, any>,
+  definition: FigureDefinition<any, any, any>,
   options: MountFigureOptions = {}
 ): MountedFigureInstance {
   // Harvest any math paths rendered into the static SVGs before replacing them

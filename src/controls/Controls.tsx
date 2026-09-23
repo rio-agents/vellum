@@ -16,7 +16,7 @@ export interface ControlsProps<
   P extends FigureParamsSchema = FigureParamsSchema,
   D extends Record<string, unknown> = Record<string, unknown>
 > {
-  definition: FigureDefinition<P, D>;
+  definition: FigureDefinition<P, D, any>;
   params: InferParamsValues<P>;
   set: <K extends keyof InferParamsValues<P>>(name: K, value: InferParamsValues<P>[K]) => void;
   className?: string;

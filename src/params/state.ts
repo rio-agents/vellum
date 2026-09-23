@@ -110,7 +110,7 @@ export function useFigureParams<
   P extends FigureParamsSchema = Record<string, never>,
   D extends Record<string, unknown> = Record<string, never>
 >(
-  definition: FigureDefinition<P, D>,
+  definition: FigureDefinition<P, D, any>,
   initialOverrides?: Partial<InferParamsValues<P>>
 ): FigureParamsHookResult<P, D> {
   const schema = definition.params;

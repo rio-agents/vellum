@@ -2,10 +2,11 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { defaultTheme } from "../theme/default-theme.ts";
 import type { FigureTheme } from "../theme/types.ts";
-import type { FigureDefinition, FigureLayout } from "../define.ts";
+import type { FigureDefinition } from "../define.ts";
 import type { AnyParamConfig } from "../params/types.ts";
 import { resolveDefaultParams } from "../params/index.ts";
 import { renderFigureLayout } from "./scope.tsx";
+import { declaredLayouts } from "./assets.ts";
 import { texToSvg } from "../text/tex.ts";
 import { registerSyncTexResolver, makeCacheKey } from "../text/tex-resolver.ts";
 
@@ -15,13 +16,19 @@ export interface RenderServerOptions {
   theme?: FigureTheme;
   params?: Record<string, unknown>;
   time?: number;
-  layout?: FigureLayout;
+  /** The layout to draw; defaults to the primary (first declared) layout. */
+  layout?: string;
   /** Asset name used to scope SVG IDs; defaults to the definition id. */
   asset?: string;
+  /**
+   * Also embed each parameter's TeX label, hidden, so that a page which hydrates
+   * the figure's controls can reuse the rendered math without loading MathJax.
+   */
+  embedControlMath?: boolean;
 }
 
 export function renderToSvgString(
-  definition: FigureDefinition<any, any>,
+  definition: FigureDefinition<any, any, any>,
   options: RenderServerOptions = {}
 ): string {
   const theme = options.theme ?? defaultTheme;
@@ -39,7 +46,7 @@ export function renderToSvgString(
       (definition.params as Record<string, AnyParamConfig> | undefined)?.time?.default ??
       0);
 
-  const layout = options.layout ?? "wide";
+  const layout = options.layout ?? declaredLayouts(definition)[0];
   const element = renderFigureLayout(definition, {
     asset: options.asset ?? definition.id,
     layout,
@@ -49,10 +56,8 @@ export function renderToSvgString(
     time: typeof time === "number" ? time : 0,
   });
 
-  // Pre-render parameter TeX labels into hidden defs so the client can harvest them
-  // without loading MathJax. The wide SVG carries them for the whole figure element.
   const paramDefs: React.ReactNode[] = [];
-  if (definition.params && layout === "wide") {
+  if (definition.params && options.embedControlMath) {
     for (const [key, p] of Object.entries(definition.params as Record<string, AnyParamConfig>)) {
       if (p.label && p.labelKind !== "text") {
         try {

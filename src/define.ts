@@ -14,44 +14,40 @@ export interface FigurePlayerConfig {
   fps?: number;
 }
 
-/**
- * A fixed composition size. `wide` is drawn at prose width; `compact` is the phone
- * composition, shown when the figure's container is narrower than the wide layout
- * can keep legible.
- */
-export type FigureLayout = "wide" | "compact";
-
+/** The size of one composition of a figure, in SVG units. */
 export interface FigureSize {
   width: number;
   height: number;
 }
 
-export interface FigureLayouts {
-  wide: FigureSize;
-  compact?: FigureSize;
-}
-
 export interface RenderContext<
   Params = Record<string, unknown>,
-  Derived = Record<string, unknown>
+  Derived = Record<string, unknown>,
+  Layout extends string = string
 > {
   params: Params;
   derived: Derived;
   theme: FigureTheme;
   time: number;
-  /** The layout being drawn; the definition's `render` is called once per declared layout. */
-  layout: FigureLayout;
+  /** The name of the layout being drawn; `render` is called once per declared layout. */
+  layout: Layout;
   /** The size of the layout being drawn. */
   size: FigureSize;
 }
 
 export interface FigureDefinition<
   P extends FigureParamsSchema = FigureParamsSchema,
-  D extends Record<string, unknown> = Record<string, unknown>
+  D extends Record<string, unknown> = Record<string, unknown>,
+  L extends string = string
 > {
   id: string;
   description: string;
-  layouts: FigureLayouts;
+  /**
+   * Named compositions of the figure, each drawn by `render` at its own size, for
+   * example `{ wide: {...}, compact: {...} }`. The first declared layout is the
+   * primary one. Names are lowercase words joined by single hyphens.
+   */
+  layouts: Record<L, FigureSize>;
   params?: P;
   /**
    * Fixed parameter settings, each rendered as its own asset `<id>--<variant>`.
@@ -59,14 +55,15 @@ export interface FigureDefinition<
    */
   variants?: Record<string, Partial<InferParamsValues<P>>>;
   derive?: (params: InferParamsValues<P>) => D;
-  render: (ctx: RenderContext<InferParamsValues<P>, D>) => ReactNode;
+  render: (ctx: RenderContext<InferParamsValues<P>, D, L>) => ReactNode;
   controls?: FigureControlsConfig;
   player?: FigurePlayerConfig;
 }
 
 export function defineFigure<
   P extends FigureParamsSchema = Record<string, never>,
-  D extends Record<string, unknown> = Record<string, never>
->(def: FigureDefinition<P, D>): FigureDefinition<P, D> {
+  D extends Record<string, unknown> = Record<string, never>,
+  L extends string = string
+>(def: FigureDefinition<P, D, L>): FigureDefinition<P, D, L> {
   return def;
 }

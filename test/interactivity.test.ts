@@ -137,3 +137,10 @@ test("interactivity: server render uses shared parameter sanitizer identical to 
   assert.deepEqual(seen.pt, [2, -3]);
   assert.equal(seen.t, 10);
 });
+
+test("interactivity: control-label math is embedded only when a hydrating page asks for it", async () => {
+  const { controlMath } = await importFixture<{ controlMath: () => { plain: string; embedded: string } }>("controls");
+  const { plain, embedded } = controlMath();
+  assert.doesNotMatch(plain, /vellum-figure-param-defs/);
+  assert.match(embedded, /<defs class="vellum-figure-param-defs"><g class="vellum-math-label" data-label-text="\\sigma"/);
+});

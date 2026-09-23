@@ -57,11 +57,18 @@ describe("planFigureAssets", () => {
     assert.throws(() => planFigureAssets(bare({ variants: {} })), /empty `variants`/);
   });
 
-  it("names files and SVG ID prefixes by asset and layout", () => {
-    assert.equal(figureAssetFile("a--b", "wide"), "a--b.svg");
-    assert.equal(figureAssetFile("a--b", "compact"), "a--b.compact.svg");
-    assert.equal(figureSvgId("a--b", "wide"), "a--b");
-    assert.equal(figureSvgId("a--b", "compact"), "a--b--compact");
+  it("names files and SVG ID prefixes by asset and layout, with the primary layout unsuffixed", () => {
+    assert.equal(figureAssetFile("a--b", "wide", true), "a--b.svg");
+    assert.equal(figureAssetFile("a--b", "compact", false), "a--b.compact.svg");
+    assert.equal(figureSvgId("a--b", "wide", true), "a--b");
+    assert.equal(figureSvgId("a--b", "compact", false), "a--b--compact");
+  });
+
+  it("accepts any layout names, taking the first as primary", () => {
+    const plans = planFigureAssets(bare({ layouts: { page: { width: 400, height: 300 }, slide: { width: 960, height: 540 } } }));
+    assert.deepEqual(plans[0].layouts, ["page", "slide"]);
+    assert.throws(() => planFigureAssets(bare({ layouts: {} })), /declares no layouts/);
+    assert.throws(() => planFigureAssets(bare({ layouts: { "Wide Page": { width: 1, height: 1 } } })), /layout "Wide Page"/);
   });
 });
 

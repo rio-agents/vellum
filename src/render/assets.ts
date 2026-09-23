@@ -1,8 +1,11 @@
-import type { FigureDefinition, FigureLayout } from "../define.ts";
+import type { FigureDefinition } from "../define.ts";
 import type { AnyParamConfig } from "../params/types.ts";
 import { sanitizeParamValue } from "../params/state.ts";
 
-/** Figure IDs and variant names: lowercase words joined by single hyphens, so `--` is free as a separator. */
+/**
+ * Figure IDs, variant names, and layout names: lowercase words joined by single
+ * hyphens, so `--` is free as a separator in asset names and SVG IDs.
+ */
 export const FIGURE_NAME_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 /** One published asset of a definition: the bare figure, or one of its variants. */
@@ -13,29 +16,31 @@ export interface FigureAssetPlan {
   variant?: string;
   /** Variant parameter overrides; absent for the bare figure. */
   params?: Record<string, unknown>;
-  layouts: FigureLayout[];
+  /** Declared layout names; the first is the primary layout. */
+  layouts: string[];
 }
 
-export function declaredLayouts(definition: FigureDefinition<any, any>): FigureLayout[] {
-  return definition.layouts.compact ? ["wide", "compact"] : ["wide"];
+/** The definition's layout names in declaration order; the first is the primary layout. */
+export function declaredLayouts(definition: FigureDefinition<any, any, any>): string[] {
+  return Object.keys(definition.layouts);
 }
 
-/** The SVG ID prefix for one layout of one asset. */
-export function figureSvgId(asset: string, layout: FigureLayout): string {
-  return layout === "wide" ? asset : `${asset}--${layout}`;
+/** The SVG ID prefix for one layout of an asset: the asset itself for the primary layout, `<asset>--<layout>` otherwise. */
+export function figureSvgId(asset: string, layout: string, primary: boolean): string {
+  return primary ? asset : `${asset}--${layout}`;
 }
 
-/** The generated file name for one layout of one asset. */
-export function figureAssetFile(asset: string, layout: FigureLayout): string {
-  return layout === "wide" ? `${asset}.svg` : `${asset}.${layout}.svg`;
+/** The file for one layout of an asset: `<asset>.svg` for the primary layout, `<asset>.<layout>.svg` otherwise. */
+export function figureAssetFile(asset: string, layout: string, primary: boolean): string {
+  return primary ? `${asset}.svg` : `${asset}.${layout}.svg`;
 }
 
-export function isInteractive(definition: FigureDefinition<any, any>): boolean {
+export function isInteractive(definition: FigureDefinition<any, any, any>): boolean {
   const params = (definition.params ?? {}) as Record<string, AnyParamConfig>;
   return Object.entries(params).some(([key, p]) => !p.hidden && !definition.controls?.hidden?.includes(key));
 }
 
-export function isAnimated(definition: FigureDefinition<any, any>): boolean {
+export function isAnimated(definition: FigureDefinition<any, any, any>): boolean {
   return Boolean(definition.player || (definition.params && "time" in definition.params));
 }
 
@@ -44,12 +49,18 @@ export function isAnimated(definition: FigureDefinition<any, any>): boolean {
  * set only declared parameters, and only to values the shared sanitizer keeps
  * unchanged; anything else is an authoring error rather than a silent correction.
  */
-export function planFigureAssets(definition: FigureDefinition<any, any>): FigureAssetPlan[] {
+export function planFigureAssets(definition: FigureDefinition<any, any, any>): FigureAssetPlan[] {
   const { id } = definition;
   if (!FIGURE_NAME_PATTERN.test(id)) {
     throw new Error(`Figure id "${id}" must be lowercase words joined by single hyphens.`);
   }
   const layouts = declaredLayouts(definition);
+  if (layouts.length === 0) throw new Error(`Figure "${id}" declares no layouts.`);
+  for (const layout of layouts) {
+    if (!FIGURE_NAME_PATTERN.test(layout)) {
+      throw new Error(`Figure "${id}" layout "${layout}" must be lowercase words joined by single hyphens.`);
+    }
+  }
   if (!definition.variants) return [{ asset: id, figure: id, layouts }];
 
   const names = Object.keys(definition.variants);

@@ -1,13 +1,13 @@
 import React, { type ReactNode, type CSSProperties, createContext, useContext } from "react";
 import { MarkerDefs } from "../marks/markers.tsx";
 import { useTheme } from "../theme/index.ts";
-import type { FigureLayout, FigureSize } from "../define.ts";
+import type { FigureSize } from "../define.ts";
 
 /** What a renderer tells `Figure` about the SVG it is drawing. */
 export interface FigureScope {
   /** Prefix for every SVG ID in this drawing; unique per asset and layout. */
   id: string;
-  layout: FigureLayout;
+  layout: string;
   size: FigureSize;
   description: string;
 }

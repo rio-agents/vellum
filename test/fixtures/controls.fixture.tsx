@@ -3,6 +3,7 @@ import { defineFigure } from "../../src/define.ts";
 import { param } from "../../src/params/schema.ts";
 import { Controls } from "../../src/controls/Controls.tsx";
 import { renderToSvgString } from "../../src/render/server.ts";
+import { Figure } from "../../src/scene/Figure.tsx";
 
 /** Two mounted control sets whose figures declare the same parameter names. */
 export function uniqueControls() {
@@ -100,3 +101,18 @@ export function serverParams() {
   return serverParamsSeen;
 }
   
+
+/** A figure with one labelled control, rendered with and without its control math embedded. */
+export function controlMath(): { plain: string; embedded: string } {
+  const definition = defineFigure({
+    id: "control-math",
+    description: "control math",
+    layouts: { wide: { width: 100, height: 100 } },
+    params: { sigma: param.number({ default: 1, label: String.raw`\sigma` }) },
+    render: () => <Figure>{null}</Figure>,
+  });
+  return {
+    plain: renderToSvgString(definition),
+    embedded: renderToSvgString(definition, { embedControlMath: true }),
+  };
+}
