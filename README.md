@@ -56,6 +56,7 @@ To render in code instead, call `renderToSvgString(definition, { layout, theme, 
 - [Marks and coordinates](docs/marks.md): `Figure`, `Panel`, the coordinate rule, every mark, and text and math.
 - [Themes](docs/themes.md): tones, text roles, and writing a theme.
 - [Interactivity](docs/interactivity.md): parameters with controls, and mounting a figure in a page.
+- [Animation](docs/animation.md): one timeline, playback, interpolation, stages, and explicit geometry transforms.
 - [Rendering](docs/rendering.md): `vellum render`, its configuration and manifest, and rendering in code.
 - [Extending](docs/extending.md): custom marks, raw SVG, themes, and post-processing the output.
 - [Examples](examples/): working figure definitions and their rendered SVGs.

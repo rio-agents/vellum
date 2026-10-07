@@ -41,7 +41,7 @@ export function Controls<
     if (hiddenList.includes(key)) return false;
     // Points are driven by DragHandle inside the SVG
     if (config.type === "point") return false;
-    // Time is driven by animation player in Phase 5
+    // Time has one playback control shared by every layout.
     if (config.type === "time") return false;
     return true;
   });

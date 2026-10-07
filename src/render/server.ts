@@ -15,7 +15,6 @@ registerSyncTexResolver(texToSvg);
 export interface RenderServerOptions {
   theme?: FigureTheme;
   params?: Record<string, unknown>;
-  time?: number;
   /** The layout to draw; defaults to the primary (first declared) layout. */
   layout?: string;
   /** Asset name used to scope SVG IDs; defaults to the definition id. */
@@ -40,12 +39,6 @@ export function renderToSvgString(
 
   const derived = definition.derive ? definition.derive(resolvedParams as any) : {};
 
-  const time =
-    options.time ??
-    (definition.player?.defaultTime ??
-      (definition.params as Record<string, AnyParamConfig> | undefined)?.time?.default ??
-      0);
-
   const layout = options.layout ?? declaredLayouts(definition)[0];
   const element = renderFigureLayout(definition, {
     asset: options.asset ?? definition.id,
@@ -53,7 +46,6 @@ export function renderToSvgString(
     params: resolvedParams as Record<string, unknown>,
     derived: derived as Record<string, unknown>,
     theme,
-    time: typeof time === "number" ? time : 0,
   });
 
   const paramDefs: React.ReactNode[] = [];

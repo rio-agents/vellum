@@ -14,7 +14,8 @@ Each visible parameter gets a control:
 
 A parameter's `label` is TeX unless `labelKind: "text"`. `controls: { order, hidden }` in the definition reorders controls or hides some without hiding the parameter from variants. Control IDs are unique per mounted figure, and form names are the parameter names.
 
-`param.point` and `param.time` exist in the schema. A point parameter is not yet bound to a drag control, and animation is not yet implemented.
+`param.time` gets a shared animation player; see [animation](animation.md).
+`param.point` is not yet bound to a drag control and does not by itself make a figure interactive.
 
 ## Mounting a figure
 

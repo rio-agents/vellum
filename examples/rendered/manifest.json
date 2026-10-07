@@ -26,6 +26,16 @@
     "interactive": false,
     "animated": false
   },
+  "linear-map-flattening": {
+    "figure": "linear-map-flattening",
+    "source": "examples/linear-map-flattening.figure.tsx",
+    "layouts": [
+      "wide",
+      "compact"
+    ],
+    "interactive": true,
+    "animated": true
+  },
   "staged-descent--step-1": {
     "figure": "staged-descent",
     "variant": "step-1",

@@ -1,17 +1,11 @@
 import type { ReactNode } from "react";
 import type { FigureTheme } from "./theme/types.ts";
 import type { FigureParamsSchema, InferParamsValues } from "./params/types.ts";
+import { timeParameter } from "./animate/time.ts";
 
 export interface FigureControlsConfig {
   order?: string[];
   hidden?: string[];
-}
-
-export interface FigurePlayerConfig {
-  defaultTime?: number;
-  duration?: number;
-  loop?: boolean;
-  fps?: number;
 }
 
 /** The size of one composition of a figure, in SVG units. */
@@ -57,7 +51,6 @@ export interface FigureDefinition<
   derive?: (params: InferParamsValues<P>) => D;
   render: (ctx: RenderContext<InferParamsValues<P>, D, L>) => ReactNode;
   controls?: FigureControlsConfig;
-  player?: FigurePlayerConfig;
 }
 
 export function defineFigure<
@@ -65,5 +58,6 @@ export function defineFigure<
   D extends Record<string, unknown> = Record<string, never>,
   L extends string = string
 >(def: FigureDefinition<P, D, L>): FigureDefinition<P, D, L> {
+  timeParameter(def.params);
   return def;
 }

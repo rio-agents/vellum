@@ -17,7 +17,6 @@ Vellum ships TypeScript source. That works while a project links a local checkou
 - Convert pointer positions through the enclosing `Panel`, and apply bounds, constraints, arrow-key steps, and a larger-step modifier.
 - Give the handle an accessible name, its two-dimensional value, and a visible focus state.
 - Keep static rendering free of client behavior, and do not count an unusable point parameter as interactive.
-- Let `mountFigure` take the accessible name the page wants (for example Markdown alt text), carry it into every live SVG and its `<title>` after each render, and hide MathJax's internal cache SVGs from the accessibility tree.
 
 ## 3. Client cost
 
@@ -25,17 +24,10 @@ Vellum ships TypeScript source. That works while a project links a local checkou
 - Redraw numbers that change with a parameter without typesetting them in the browser; load MathJax only when a label's TeX structure changes.
 - Measure the initial JavaScript, ordinary control operation, and a dynamic-TeX fixture.
 
-## 4. Animation
-
-- Make `param.time` the single time authority; static and first live frames use the same sanitized default.
-- An elapsed-time `requestAnimationFrame` clock with play, pause, seek, speed, optional loop, pausing when hidden or off screen, clean resumption, and complete disposal.
-- Accessible play/pause, scrubber, speed, and loop controls; never autoplay under reduced motion.
-- Easing, and interpolation of numbers, points, and 2 × 2 matrices.
-
-## 5. A scaffold
+## 4. A scaffold
 
 `vellum new <path>/<id> [--interactive] [--animated]` writes a valid definition, rejects invalid or duplicate ids, and prints the render and review steps. Test it in temporary folders.
 
-## 6. Diagram primitives
+## 5. Diagram primitives
 
 Neural-network and transformer diagrams need a vocabulary that plots do not: boxes with labels and named anchor points on their sides, connectors between anchors (straight, elbowed, curved), groups drawn around several boxes, and simple row, column, and stack placement. Design these from real example diagrams and from existing TikZ work, keep placement explicit (no automatic graph layout), and add only what the examples need. The first test is replacing hand-drawn Astro diagrams in webnotes.

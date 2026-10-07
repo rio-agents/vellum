@@ -111,18 +111,7 @@ export function affine2(points: readonly Vec2[], transform: Transform2, mean: Ve
   } else if ("cholesky" in transform) {
     L = transform.cholesky;
   } else {
-    // If passed a Mat2:
-    // If lower triangular with zero upper right (and not symmetric, or diagonal where L is wanted):
-    if (Math.abs(transform[0][1]) < 1e-12 && Math.abs(transform[1][0]) > 1e-12) {
-      // Strictly lower triangular: already L
-      L = transform;
-    } else if (Math.abs(transform[0][1] - transform[1][0]) < 1e-9 && Math.abs(transform[0][1]) > 1e-12) {
-      // Off-diagonal is non-zero and symmetric: covariance matrix
-      L = cholesky2(transform);
-    } else {
-      // Default: use matrix directly as linear transformation L
-      L = transform;
-    }
+    L = transform;
   }
 
   return points.map(([x, y]) => [

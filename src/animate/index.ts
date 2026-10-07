@@ -1,1 +1,3 @@
-export type { FigurePlayerConfig } from "../define.ts";
+export * from "./time.ts";
+export * from "./interpolate.ts";
+export * from "./clock.ts";

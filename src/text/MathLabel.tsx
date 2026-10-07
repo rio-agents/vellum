@@ -118,6 +118,7 @@ export function MathLabel({
         height={roundedH}
         viewBox={math.viewBox}
         overflow="visible"
+        aria-hidden="true"
         style={{ display: "block" }}
         dangerouslySetInnerHTML={{ __html: math.inner }}
       />

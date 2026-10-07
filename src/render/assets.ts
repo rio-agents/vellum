@@ -1,6 +1,7 @@
 import type { FigureDefinition } from "../define.ts";
 import type { AnyParamConfig } from "../params/types.ts";
 import { sanitizeParamValue } from "../params/state.ts";
+import { timeParameter } from "../animate/time.ts";
 
 /**
  * Figure IDs, variant names, and layout names: lowercase words joined by single
@@ -37,11 +38,12 @@ export function figureAssetFile(asset: string, layout: string, primary: boolean)
 
 export function isInteractive(definition: FigureDefinition<any, any, any>): boolean {
   const params = (definition.params ?? {}) as Record<string, AnyParamConfig>;
-  return Object.entries(params).some(([key, p]) => !p.hidden && !definition.controls?.hidden?.includes(key));
+  return Object.entries(params).some(([key, p]) => p.type !== "point" && !p.hidden && !definition.controls?.hidden?.includes(key));
 }
 
 export function isAnimated(definition: FigureDefinition<any, any, any>): boolean {
-  return Boolean(definition.player || (definition.params && "time" in definition.params));
+  const timeline = timeParameter(definition.params);
+  return Boolean(timeline && !timeline.config.hidden && !definition.controls?.hidden?.includes(timeline.name));
 }
 
 /**

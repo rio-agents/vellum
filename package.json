@@ -1,6 +1,6 @@
 {
   "name": "@rio-agents/vellum",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Mathematical and technical figures as SVG, drawn with React.",
   "private": true,
   "type": "module",

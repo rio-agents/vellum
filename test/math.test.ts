@@ -205,7 +205,7 @@ describe("Math Core", () => {
         [1, 0],
         [0, 1],
       ];
-      const transformed = affine2(points, sigma, [1, 2]);
+      const transformed = affine2(points, { cov: sigma }, [1, 2]);
       const L = cholesky2(sigma);
       approx(transformed[0][0], 1 + L[0][0]);
       approx(transformed[0][1], 2 + L[1][0]);

@@ -37,7 +37,8 @@ export interface PointParamConfig extends BaseParamConfig<[number, number]> {
 
 export interface TimeParamConfig extends BaseParamConfig<number> {
   type: "time";
-  duration?: number;
+  /** Timeline length in seconds. Must be finite and positive. */
+  duration: number;
   loop?: boolean;
 }
 

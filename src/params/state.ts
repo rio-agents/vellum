@@ -65,14 +65,11 @@ export function sanitizeParamValue(config: AnyParamConfig, value: unknown): unkn
       }
       return config.default;
     case "time":
-      if (typeof value === "number" && !Number.isNaN(value)) {
-        let t = value;
-        if (config.duration !== undefined) {
-          t = Math.max(0, Math.min(config.duration, t));
-        }
-        return t;
-      }
-      return config.default;
+      return clampNumber(
+        typeof value === "number" && Number.isFinite(value) ? value : config.default,
+        0,
+        config.duration,
+      );
     default:
       return value ?? (config as any).default;
   }

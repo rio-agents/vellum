@@ -4,6 +4,7 @@ import type { FigureTheme } from "../theme/types.ts";
 import type { FigureDefinition, FigureSize } from "../define.ts";
 import { FigureScopeContext } from "../scene/Figure.tsx";
 import { declaredLayouts, figureSvgId } from "./assets.ts";
+import { figureTime } from "../animate/time.ts";
 
 export interface FigureLayoutRenderInput {
   asset: string;
@@ -11,13 +12,13 @@ export interface FigureLayoutRenderInput {
   params: Record<string, unknown>;
   derived: Record<string, unknown>;
   theme: FigureTheme;
-  time: number;
+  accessibleName?: string;
 }
 
 /** Draws one layout of a definition with the scope that `Figure` and the marks read. */
 export function renderFigureLayout(
   definition: FigureDefinition<any, any, any>,
-  { asset, layout, params, derived, theme, time }: FigureLayoutRenderInput
+  { asset, layout, params, derived, theme, accessibleName }: FigureLayoutRenderInput
 ): ReactElement {
   const size = (definition.layouts as Record<string, FigureSize>)[layout];
   if (!size) throw new Error(`Figure "${definition.id}" does not declare a ${layout} layout.`);
@@ -28,11 +29,11 @@ export function renderFigureLayout(
         id: figureSvgId(asset, layout, declaredLayouts(definition)[0] === layout),
         layout,
         size,
-        description: definition.description,
+        description: accessibleName ?? definition.description,
       }}
     >
       <ThemeProvider theme={theme}>
-        {definition.render({ params, derived, theme, time, layout, size })}
+        {definition.render({ params, derived, theme, time: figureTime(definition.params, params), layout, size })}
       </ThemeProvider>
     </FigureScopeContext.Provider>
   );
