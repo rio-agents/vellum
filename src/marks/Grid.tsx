@@ -17,8 +17,8 @@ export function Grid({
   ticksY = 5,
   tone = "border",
   weight = "hairline",
-  dash = "dotted",
-  opacity = 0.7,
+  dash = "solid",
+  opacity = 0.6,
 }: GridProps) {
   const frame = useFrame();
   const theme = useTheme();

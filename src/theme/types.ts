@@ -13,6 +13,8 @@ export interface FigureTheme {
   font: {
     sans: string;
     serif: string;
+    /** Numerals and short symbolic labels set beside TeX, such as tick labels; match the TeX font. */
+    math: string;
   };
   text: {
     title: number;
@@ -40,6 +42,8 @@ export interface FigureTheme {
 }
 
 export type TextRole = keyof FigureTheme["text"];
+
+export type FontRole = keyof FigureTheme["font"];
 
 export type Tone =
   | "ink"

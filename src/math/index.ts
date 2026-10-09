@@ -5,3 +5,5 @@ export * from "./linalg.ts";
 export * from "./transform.ts";
 export * from "./geometry.ts";
 export * from "./fields.ts";
+export * from "./ode.ts";
+export * from "./level-sets.ts";

@@ -38,7 +38,7 @@ export function figureAssetFile(asset: string, layout: string, primary: boolean)
 
 export function isInteractive(definition: FigureDefinition<any, any, any>): boolean {
   const params = (definition.params ?? {}) as Record<string, AnyParamConfig>;
-  return Object.entries(params).some(([key, p]) => p.type !== "point" && !p.hidden && !definition.controls?.hidden?.includes(key));
+  return Object.entries(params).some(([key, p]) => !p.hidden && !definition.controls?.hidden?.includes(key));
 }
 
 export function isAnimated(definition: FigureDefinition<any, any, any>): boolean {

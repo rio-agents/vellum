@@ -2,7 +2,7 @@ import React, { type CSSProperties } from "react";
 import type { Anchor } from "./anchor.ts";
 import { useFrameSafe } from "../scene/frame-context.ts";
 import { placementToPx, type Placement } from "../scene/position.ts";
-import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole } from "../theme/index.ts";
+import { useTheme, resolveTone, resolveFontSize, type Tone, type TextRole, type FontRole } from "../theme/index.ts";
 
 export type LabelProps = Placement & {
   text: string;
@@ -11,6 +11,8 @@ export type LabelProps = Placement & {
   offset?: [number, number];
   tone?: Tone;
   size?: TextRole;
+  /** Which theme font to use: the interface sans, the serif, or the face that matches TeX. */
+  font?: FontRole;
   fontFamily?: string;
   fontWeight?: number | string;
   letterSpacing?: number | string;
@@ -82,6 +84,7 @@ export function Label({
   offset = [0, 0],
   tone = "ink",
   size,
+  font = "sans",
   fontFamily,
   fontWeight,
   letterSpacing,
@@ -95,7 +98,7 @@ export function Label({
 
   const finalSize = resolveFontSize(size, "label", theme);
   const toneColor = resolveTone(tone, theme);
-  const face = fontFamily ?? theme.font.sans;
+  const face = fontFamily ?? theme.font[font];
 
   const [px, py] = placementToPx("Label", { at, x, y }, frame);
   const targetX = px + offset[0];
@@ -124,7 +127,7 @@ export function Label({
       strokeWidth={halo ? 2 * HALO_PX : undefined}
       strokeLinejoin={halo ? "round" : undefined}
       paintOrder={halo ? "stroke" : undefined}
-      style={style}
+      style={font === "math" ? { fontVariantNumeric: "tabular-nums", ...style } : style}
     >
       {text}
     </text>

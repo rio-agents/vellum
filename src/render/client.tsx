@@ -51,7 +51,7 @@ function InteractiveFigure({ definition, asset, theme, initialParams, element, a
   return (
     <>
       {declaredLayouts(definition).map((layout) =>
-        renderFigureLayout(definition, { asset, layout, params, derived, theme, accessibleName })
+        renderFigureLayout(definition, { asset, layout, params, derived, theme, accessibleName, set: set as (name: string, value: unknown) => void })
       )}
       <ThemeProvider theme={theme}>
         <Controls definition={definition} params={params} set={set} />

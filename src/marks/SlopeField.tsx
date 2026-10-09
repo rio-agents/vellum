@@ -34,11 +34,11 @@ export function SlopeField({
   rows = 13,
   x,
   y,
-  length = 14,
+  length = 13,
   where,
   tone = "muted",
-  weight = "regular",
-  opacity = 0.75,
+  weight = 1.1,
+  opacity = 0.6,
   className,
 }: SlopeFieldProps) {
   const frame = useFrame();

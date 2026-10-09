@@ -22,6 +22,7 @@ export const defaultTheme: FigureTheme = {
   font: {
     sans: 'system-ui, -apple-system, "Inter", sans-serif',
     serif: '"Source Serif 4", Georgia, serif',
+    math: '"Latin Modern Roman", "Computer Modern Serif", "CMU Serif", "STIX Two Text", Georgia, serif',
   },
   text: {
     title: 15,
@@ -38,7 +39,7 @@ export const defaultTheme: FigureTheme = {
   },
   space: {
     labelOffset: 8,
-    tickLength: 4,
+    tickLength: 5,
   },
   opacity: {
     cloud: 0.45,

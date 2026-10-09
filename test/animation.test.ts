@@ -116,7 +116,7 @@ test("time validation rejects competing clocks and sanitizes defaults as well as
   assert.equal(isAnimated(definition), true);
   assert.equal(isInteractive(definition), true);
   assert.equal(isAnimated({ ...definition, controls: { hidden: ["elapsed"] } }), false);
-  assert.equal(isInteractive({ ...base, params: { point: param.point({ default: [0, 0] }) } }), false);
+  assert.equal(isInteractive({ ...base, params: { point: param.point({ default: [0, 0] }) } }), true);
 });
 
 test("static rendering shares the named, sanitized time with derived state and every layout", async () => {

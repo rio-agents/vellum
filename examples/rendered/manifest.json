@@ -17,6 +17,15 @@
     "interactive": false,
     "animated": false
   },
+  "direction-field": {
+    "figure": "direction-field",
+    "source": "examples/direction-field.figure.tsx",
+    "layouts": [
+      "main"
+    ],
+    "interactive": true,
+    "animated": false
+  },
   "function-plot": {
     "figure": "function-plot",
     "source": "examples/function-plot.figure.tsx",

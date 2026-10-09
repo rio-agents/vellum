@@ -83,17 +83,9 @@ export function MathLabel({
   const roundedW = Number(widthPx.toFixed(2));
   const roundedH = Number(heightPx.toFixed(2));
 
-  // A surface-colored copy of the glyphs, widened by a stroke, sits under
-  // the label. MathJax sets its own stroke attributes, so they are rewritten
-  // on the copy; the outline width is converted from pixels to glyph units.
-  const haloWidth = (2 * HALO_PX * Number(math.viewBox.split(/\s+/)[2])) / roundedW;
-  const haloInner = halo
-    ? math.inner
-        .replaceAll('stroke="currentColor"', `stroke="${theme.color.surface}"`)
-        .replaceAll('fill="currentColor"', `fill="${theme.color.surface}"`)
-        .replaceAll('stroke-width="0"', `stroke-width="${Number(haloWidth.toFixed(2))}" stroke-linejoin="round"`)
-    : undefined;
-
+  // A surface-colored plate sits under a haloed label. An outline around each
+  // glyph would leave gaps between symbols where crossing lines show through.
+  const pad = HALO_PX;
   return (
     <g
       className={`vellum-math-label ${className ?? ""}`.trim()}
@@ -102,15 +94,16 @@ export function MathLabel({
       transform={`translate(${finalX}, ${finalY})`}
       style={{ color: toneColor, fill: "currentColor", ...style }}
     >
-      {haloInner && (
-        <svg
-          width={roundedW}
-          height={roundedH}
-          viewBox={math.viewBox}
-          overflow="visible"
-          style={{ display: "block" }}
-          aria-hidden="true"
-          dangerouslySetInnerHTML={{ __html: haloInner }}
+      {halo && (
+        <rect
+          className="vellum-math-halo"
+          x={-pad}
+          y={-pad / 2}
+          width={Number((roundedW + 2 * pad).toFixed(2))}
+          height={Number((roundedH + pad).toFixed(2))}
+          rx={2}
+          fill={theme.color.surface}
+          fillOpacity={0.88}
         />
       )}
       <svg

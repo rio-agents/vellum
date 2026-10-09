@@ -15,7 +15,29 @@ Each visible parameter gets a control:
 A parameter's `label` is TeX unless `labelKind: "text"`. `controls: { order, hidden }` in the definition reorders controls or hides some without hiding the parameter from variants. Control IDs are unique per mounted figure, and form names are the parameter names.
 
 `param.time` gets a shared animation player; see [animation](animation.md).
-`param.point` is not yet bound to a drag control and does not by itself make a figure interactive.
+
+## Points
+
+A `param.point` has no control below the figure. It is moved inside the figure by marks bound to it by name:
+
+```tsx
+params: { start: param.point({ label: "Initial point", labelKind: "text", default: [-2, 2], bounds: { x: [-3, 3], y: [-3, 3] }, step: 0.05 }) },
+render: ({ params }) => (
+  <Figure>
+    <Panel area={area} x={[-3, 3]} y={[-3, 3]}>
+      <SolutionCurve rate={rate} through={params.start} />
+      <Probe sets="start">{(at) => at && <Point at={at} radius={2} tone="ink" />}</Probe>
+      <DragHandle param="start" />
+    </Panel>
+  </Figure>
+),
+```
+
+- `DragHandle` shows the point and moves it with the pointer and the arrow keys, by the parameter's `step` (Shift for five steps). The parameter's `bounds` limit it, and `constrain` can snap or restrict a proposed point. It is focusable, has a visible focus ring, and announces its name and position.
+- `Probe` covers its panel. With `sets`, pressing anywhere in the panel moves the point there, so readers need not find the handle. Its `children` receive the pointer's position in data coordinates while a mouse hovers, for readouts such as a tangent at the cursor, and `null` otherwise. Place it before the marks that should stay on top.
+- `useParam(name)` gives a custom mark the same access: the value, the parameter's config, and a setter.
+
+In a static render a handle is a plain point and a probe draws only `children(null)`; neither adds focusable elements. A figure with a visible point parameter is interactive.
 
 ## Mounting a figure
 

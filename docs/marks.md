@@ -17,6 +17,8 @@ A `<Panel>` maps a data rectangle onto a pixel rectangle of the figure:
 - `clip` hides anything drawn outside the rectangle. Each clipped panel gets its own clip path.
 - `padding` insets the drawn rectangle inside `area`.
 
+`Axes` draws two crossing axis lines by default. With `frame`, it draws a closed box around the panel with ticks pointing inward on the bottom and left edges, the usual form for a plot that fills its panel; pair it with `Grid` for light lines at the ticks. Tick labels are set in the theme's `math` font, so numbers match the TeX labels beside them, and negative numbers get a true minus sign (`withMinusSign`).
+
 Panels can overlap. A common pattern draws dense marks in a clipped panel, then axes and labels in an unclipped panel over the same area, so points on the edge stay whole.
 
 ## The coordinate rule
@@ -45,8 +47,11 @@ All marks take a `tone` (see [themes](themes.md)). Stroked marks take a `weight`
 | `Polygon` | a closed polygon | `points` |
 | `Region` | a band across the panel | `x` and/or `y` spans; the missing one spans the panel |
 | `Grid` | grid lines | `ticksX`, `ticksY` (a count or explicit values) |
-| `Axes` | axes, ticks, tick labels, axis titles | `origin` (a point or `"edges"`), `ticksX`, `ticksY`, `showTickLabels`, `tickFormatX`, `tickFormatY`, `xLabel`, `yLabel` |
+| `Axes` | axes, ticks, tick labels, axis titles | `origin` (a point or `"edges"`) or `frame`, `ticksX`, `ticksY`, `showTickLabels`, `tickFormatX`, `tickFormatY`, `xLabel`, `yLabel` |
 | `SlopeField` | short segments of slope `f(x, y)` on a grid | `slope`, `columns`, `rows`, `length` (pixels), `where` |
+| `SolutionCurve` | the solution of `y' = rate(x, y)` through a point, by fourth-order Runge–Kutta, drawn until it leaves the panel | `rate`, `through`, `domain`, `direction` (`"both"`, `"forward"`, `"backward"`), `step` |
+| `Contour` | level curves `fn(x, y) = c` by marching squares, joined so dashes stay continuous | `fn`, `levels` (one or several), `resolution` |
+| `LevelRegion` | the region where `fn(x, y)` is above (or below) a level, with a smooth boundary | `fn`, `level` (0), `side`, `resolution`, `fillOpacity` |
 | `Vector` | an arrow from a point, with a label | `from` (origin by default), `to`, `label` |
 | `Callout` | a leader line from a point to a label | `at`, `to`, `label` |
 
@@ -78,6 +83,7 @@ All marks take a `tone` (see [themes](themes.md)). Stroked marks take a `weight`
 ```
 
 - `size` is a text role: `title`, `label`, `tick`, `caption`, `math`, or `symbol`.
-- `halo` outlines the text in the surface color so it stays readable where it crosses lines or fills.
+- `halo` keeps a label readable where it crosses lines or fills: a text label is outlined in the surface color, and a math label sits on a surface-colored plate, since an outline around each glyph leaves gaps between symbols where lines show through.
+- `font` picks the theme font for a `Label`: `"sans"` (the default), `"serif"`, or `"math"`, the face that matches TeX. Use `"math"` for numbers and short symbolic labels set beside mathematics; it also uses tabular numerals.
 - `MathLabel` renders TeX with MathJax into SVG paths when the figure is rendered, so the SVG needs no math fonts. `display` switches to display-style math.
 - `InlineTex` renders TeX for HTML around a figure, such as control labels.

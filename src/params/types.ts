@@ -33,6 +33,8 @@ export interface ChoiceParamConfig<T extends string = string> extends BaseParamC
 export interface PointParamConfig extends BaseParamConfig<[number, number]> {
   type: "point";
   bounds?: { x?: [number, number]; y?: [number, number] };
+  /** Arrow-key step for a drag handle bound to this point, in data units; Shift moves five steps. */
+  step?: number;
 }
 
 export interface TimeParamConfig extends BaseParamConfig<number> {

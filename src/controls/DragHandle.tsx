@@ -1,184 +1,118 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useFrame } from "../scene/frame-context.ts";
 import { useTheme, resolveTone, type Tone } from "../theme/index.ts";
-import { clampNumber } from "../params/state.ts";
+import { useParam } from "../params/binding.ts";
+import type { PointParamConfig } from "../params/types.ts";
 
 export interface DragHandleProps {
-  point: [number, number];
-  onChange: (point: [number, number]) => void;
-  bounds?: { x?: [number, number]; y?: [number, number] };
-  step?: number;
+  /** Name of the `param.point` this handle shows and moves. */
+  param: string;
+  /** Accessible name; defaults to the parameter's text label. */
   label?: string;
+  /** Snap or restrict a proposed point, in data coordinates, before it is set. */
+  constrain?: (point: [number, number]) => [number, number];
   tone?: Tone;
   radius?: number;
-  constrain?: (pt: [number, number]) => [number, number];
   className?: string;
 }
 
-export function DragHandle({
-  point,
-  onChange,
-  bounds,
-  step = 0.05,
-  label = "Control point",
-  tone = "accent",
-  radius = 7,
-  constrain,
-  className,
-}: DragHandleProps) {
+/** Converts a pointer event to figure pixels through the owning SVG's transform. */
+export function pointerToFigurePx(event: React.PointerEvent<SVGElement>): [number, number] | null {
+  const svg = event.currentTarget.ownerSVGElement ?? (event.currentTarget as SVGSVGElement);
+  const ctm = svg.getScreenCTM?.();
+  if (!ctm) return null;
+  const pt = svg.createSVGPoint();
+  pt.x = event.clientX;
+  pt.y = event.clientY;
+  const p = pt.matrixTransform(ctm.inverse());
+  return [p.x, p.y];
+}
+
+const fmt = (v: number) => (v < 0 ? "−" : "") + Math.abs(v).toFixed(2);
+
+/**
+ * A draggable point bound to a declared `param.point`. In a live figure it moves
+ * with the pointer and with the arrow keys (Shift for larger steps), and the
+ * parameter's bounds limit it. In a static render it is drawn as a plain point.
+ */
+export function DragHandle({ param: name, label, constrain, tone = "accent", radius = 5.5, className }: DragHandleProps) {
   const frame = useFrame();
   const theme = useTheme();
-  const [isDragging, setIsDragging] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const handleRef = useRef<SVGGElement>(null);
+  const { value, config, set } = useParam<[number, number]>(name);
+  const [dragging, setDragging] = useState(false);
+  const [focused, setFocused] = useState(false);
+
+  if (config.type !== "point") throw new Error(`DragHandle needs a point parameter; "${name}" is a ${config.type}.`);
+  const pointConfig = config as PointParamConfig;
+  const step = pointConfig.step ?? Math.abs(frame.xDomain[1] - frame.xDomain[0]) / 100;
+  const name_ = label ?? (pointConfig.labelKind === "text" && pointConfig.label ? pointConfig.label : "Point");
 
   const toneColor = resolveTone(tone, theme);
-  const surfaceColor = resolveTone("surface", theme);
+  const surface = resolveTone("surface", theme);
+  const [px, py] = frame.toPx(value);
 
-  const [px, py] = frame.toPx(point);
-
-  const handlePointerDown = useCallback(
-    (e: React.PointerEvent<SVGGElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.setPointerCapture(e.pointerId);
-      setIsDragging(true);
-      handleRef.current?.focus();
+  const propose = useCallback(
+    (point: [number, number]) => {
+      if (!set) return;
+      const next = constrain ? constrain(point) : point;
+      set([Number(next[0].toFixed(4)), Number(next[1].toFixed(4))]);
     },
-    []
+    [set, constrain]
   );
 
-  const handlePointerMove = useCallback(
-    (e: React.PointerEvent<SVGGElement>) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const svg = e.currentTarget.ownerSVGElement;
-      if (!svg) return;
-
-      const ctm = svg.getScreenCTM();
-      if (!ctm) return;
-
-      const pt = svg.createSVGPoint();
-      pt.x = e.clientX;
-      pt.y = e.clientY;
-      const svgPoint = pt.matrixTransform(ctm.inverse());
-
-      let dataPoint = frame.fromPx([svgPoint.x, svgPoint.y]);
-
-      if (constrain) {
-        dataPoint = constrain(dataPoint);
-      }
-
-      let [x, y] = dataPoint;
-      if (bounds?.x) x = clampNumber(x, bounds.x[0], bounds.x[1]);
-      if (bounds?.y) y = clampNumber(y, bounds.y[0], bounds.y[1]);
-
-      onChange([Number(x.toFixed(4)), Number(y.toFixed(4))]);
-    },
-    [isDragging, frame, constrain, bounds, onChange]
+  const dot = (
+    <>
+      <circle r={radius + 4} fill={toneColor} fillOpacity={dragging || focused ? 0.22 : 0.14} />
+      <circle r={radius} fill={toneColor} stroke={surface} strokeWidth={1.5} />
+    </>
   );
 
-  const handlePointerUp = useCallback(
-    (e: React.PointerEvent<SVGGElement>) => {
-      if (isDragging) {
-        try {
-          e.currentTarget.releasePointerCapture(e.pointerId);
-        } catch {
-          // pointer might already be released
-        }
-        setIsDragging(false);
-      }
-    },
-    [isDragging]
-  );
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<SVGGElement>) => {
-      let dx = 0;
-      let dy = 0;
-      const effectiveStep = e.shiftKey ? step * 5 : step;
-
-      switch (e.key) {
-        case "ArrowLeft":
-          dx = -effectiveStep;
-          break;
-        case "ArrowRight":
-          dx = effectiveStep;
-          break;
-        case "ArrowDown":
-          dy = -effectiveStep;
-          break;
-        case "ArrowUp":
-          dy = effectiveStep;
-          break;
-        default:
-          return;
-      }
-
-      e.preventDefault();
-      let nextPoint: [number, number] = [point[0] + dx, point[1] + dy];
-
-      if (constrain) {
-        nextPoint = constrain(nextPoint);
-      }
-
-      let [x, y] = nextPoint;
-      if (bounds?.x) x = clampNumber(x, bounds.x[0], bounds.x[1]);
-      if (bounds?.y) y = clampNumber(y, bounds.y[0], bounds.y[1]);
-
-      onChange([Number(x.toFixed(4)), Number(y.toFixed(4))]);
-    },
-    [point, step, constrain, bounds, onChange]
-  );
+  if (!set) {
+    return (
+      <g className={`vellum-drag-handle ${className ?? ""}`.trim()} transform={`translate(${px}, ${py})`}>
+        {dot}
+      </g>
+    );
+  }
 
   return (
     <g
-      ref={handleRef}
       tabIndex={0}
       role="slider"
-      aria-label={label}
-      aria-valuenow={point[0]}
-      aria-valuetext={`(${point[0].toFixed(2)}, ${point[1].toFixed(2)})`}
+      aria-roledescription="draggable point"
+      aria-label={name_}
+      aria-valuetext={`x ${fmt(value[0])}, y ${fmt(value[1])}`}
       className={`vellum-drag-handle ${className ?? ""}`.trim()}
-      transform={`translate(${px.toFixed(2)}, ${py.toFixed(2)})`}
-      style={{
-        cursor: isDragging ? "grabbing" : "grab",
-        outline: "none",
-        touchAction: "none",
+      transform={`translate(${px}, ${py})`}
+      style={{ cursor: dragging ? "grabbing" : "grab", outline: "none", touchAction: "none" }}
+      onPointerDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        (e.currentTarget as SVGGElement).focus();
+        setDragging(true);
       }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      onKeyDown={handleKeyDown}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
+      onPointerMove={(e) => {
+        if (!dragging) return;
+        const p = pointerToFigurePx(e);
+        if (p) propose(frame.fromPx(p));
+      }}
+      onPointerUp={() => setDragging(false)}
+      onPointerCancel={() => setDragging(false)}
+      onKeyDown={(e) => {
+        const move = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+        if (!move) return;
+        e.preventDefault();
+        const s = e.shiftKey ? step * 5 : step;
+        propose([value[0] + move[0] * s, value[1] + move[1] * s]);
+      }}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
     >
-      {/* Invisible large hit target for touch accessibility */}
-      <circle r={20} fill="transparent" />
-
-      {/* Visible focus ring */}
-      {isFocused && (
-        <circle
-          r={radius + 5}
-          fill="none"
-          stroke={toneColor}
-          strokeWidth={2}
-          strokeOpacity={0.6}
-          strokeDasharray="3 2"
-        />
-      )}
-
-      {/* Outer border for high contrast against background */}
-      <circle r={radius + 1.5} fill={surfaceColor} />
-
-      {/* Main handle dot */}
-      <circle
-        r={radius}
-        fill={toneColor}
-        stroke={surfaceColor}
-        strokeWidth={1.5}
-      />
+      {/* A large transparent target for touch. */}
+      <circle r={18} fill="transparent" />
+      {focused && <circle r={radius + 7} fill="none" stroke={toneColor} strokeWidth={1.5} />}
+      {dot}
     </g>
   );
 }

@@ -9,6 +9,8 @@ export * from "./Arrow.tsx";
 export * from "./Vector.tsx";
 export * from "./Scatter.tsx";
 export * from "./SlopeField.tsx";
+export * from "./SolutionCurve.tsx";
+export * from "./Contour.tsx";
 export * from "./Point.tsx";
 export * from "./Bars.tsx";
 export * from "./Ellipse.tsx";

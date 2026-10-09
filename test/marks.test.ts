@@ -19,11 +19,11 @@ const attribute = (markup: string, labelText: string, name: string) => {
 describe("Axes labels inside a panel", () => {
   it("places tick labels beside their ticks in panel pixels", () => {
     const markup = fixture.tickLabels();
-    // x = 5 is pixel 300 on the x-axis at pixel y 250, below a 4 px tick and a 2 px gap.
+    // x = 5 is pixel 300 on the x-axis at pixel y 250, below a 5 px tick and a 3 px gap.
     assert.equal(attribute(markup, "5", "x"), "300");
-    assert.equal(attribute(markup, "5", "y"), "256");
-    // y = 4 is pixel 90 on the y-axis at pixel x 100, left of a 4 px tick and a 3 px gap.
-    assert.equal(attribute(markup, "4", "x"), "93");
+    assert.equal(attribute(markup, "5", "y"), "258");
+    // y = 4 is pixel 90 on the y-axis at pixel x 100, left of a 5 px tick and a 5 px gap.
+    assert.equal(attribute(markup, "4", "x"), "90");
     assert.equal(attribute(markup, "4", "y"), "90");
   });
 
@@ -41,11 +41,11 @@ describe("Label halos", () => {
     assert.match(fixture.haloText(), /data-label-text="halo"[^>]*stroke="#ffffff"[^>]*stroke-width="6"[^>]*paint-order="stroke"/);
   });
 
-  it("draws a widened surface-colored copy under a math label", () => {
+  it("draws a surface-colored plate under a math label", () => {
     const markup = fixture.haloMath();
-    assert.equal((markup.match(/<svg width/g) ?? []).length, 2, "halo copy plus the label itself");
-    assert.match(markup, /stroke="#ffffff" fill="#ffffff" stroke-width="\d+(\.\d+)?" stroke-linejoin="round"/);
-    assert.doesNotMatch(fixture.plainMath(), /stroke-linejoin="round"/);
+    assert.equal((markup.match(/<svg width/g) ?? []).length, 1, "the label itself, once");
+    assert.match(markup, /<rect class="vellum-math-halo"[^>]*fill="#ffffff"/);
+    assert.doesNotMatch(fixture.plainMath(), /vellum-math-halo/);
   });
 });
 

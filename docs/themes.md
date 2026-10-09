@@ -15,10 +15,10 @@ A `FigureTheme` has these parts:
 | Part | Holds | Default |
 |---|---|---|
 | `color` | one value per tone, with `series` as an array of six | a warm light palette |
-| `font` | `sans` and `serif` font stacks | system sans, Source Serif 4 |
+| `font` | `sans`, `serif`, and `math` font stacks; `math` sets numbers and short labels beside TeX, so it should match the TeX font | system sans, Source Serif 4, Latin Modern Roman |
 | `text` | a size in SVG units for each role: `title`, `label`, `tick`, `caption`, `math`, `symbol` | 15, 13, 11, 12, 13.5, 30 |
 | `stroke` | the widths of `hairline`, `regular`, and `bold` | 1, 1.5, 2.5 |
-| `space` | `labelOffset` and `tickLength`, in pixels | 8, 4 |
+| `space` | `labelOffset` and `tickLength`, in pixels | 8, 5 |
 | `opacity` | `cloud`, `fill`, and `faded` opacities | 0.45, 0.1, 0.25 |
 
 Text sizes are in SVG units, so how large they look depends on the size at which the SVG is shown. A figure 720 units wide shown 720 CSS pixels wide draws a 12-unit caption at 12 px; shown 360 pixels wide, it draws it at 6 px. A project that needs a minimum text size checks it at its own display sizes.
