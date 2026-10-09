@@ -39,6 +39,7 @@ export function Controls<
     const config = schema[key];
     if (config.hidden) return false;
     if (hiddenList.includes(key)) return false;
+    if (definition.controls?.inFigure?.includes(key)) return false;
     // Points are driven by DragHandle inside the SVG
     if (config.type === "point") return false;
     // Time has one playback control shared by every layout.

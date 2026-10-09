@@ -5,7 +5,14 @@ import { timeParameter } from "./animate/time.ts";
 
 export interface FigureControlsConfig {
   order?: string[];
+  /** Parameters with no control at all; a figure whose visible parameters are all hidden is not interactive. */
   hidden?: string[];
+  /**
+   * Parameters operated by marks inside the figure, such as `ChipGroup` or
+   * `ChipToggle`. They get no control below the figure but still make it
+   * interactive. Point parameters are always operated inside the figure.
+   */
+  inFigure?: string[];
 }
 
 /** The size of one composition of a figure, in SVG units. */

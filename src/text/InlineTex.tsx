@@ -1,4 +1,4 @@
-import React, { type CSSProperties, useState, useEffect } from "react";
+import React, { type CSSProperties, useState, useEffect, useMemo } from "react";
 import { resolveTex, loadClientTex } from "./tex-resolver.ts";
 import type { TexSvgResult } from "./tex.ts";
 import { useTheme } from "../theme/index.ts";
@@ -25,6 +25,10 @@ export function InlineTex({ tex, size = 15, style, className }: InlineTexProps) 
     }
   }, [tex, initialMath]);
 
+  // A new object here on every render makes React rewrite the glyphs each
+  // time, replacing nodes under the pointer and swallowing clicks.
+  const html = useMemo(() => ({ __html: math?.inner ?? "" }), [math?.inner]);
+
   if (!math) {
     return <span className={`vellum-inline-tex ${className ?? ""}`.trim()} style={style}>{tex}</span>;
   }
@@ -49,7 +53,7 @@ export function InlineTex({ tex, size = 15, style, className }: InlineTexProps) 
         overflow="visible"
         style={{ display: "block" }}
         fill="currentColor"
-        dangerouslySetInnerHTML={{ __html: math.inner }}
+        dangerouslySetInnerHTML={html}
       />
     </span>
   );

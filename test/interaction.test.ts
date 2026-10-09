@@ -39,3 +39,26 @@ describe("ODE and level-set marks", () => {
     assert.match(svg, /class="vellum-level-region"/);
   });
 });
+
+describe("Chips bound to choice and boolean parameters", () => {
+  it("draws static chips as a legend, with nothing focusable", () => {
+    const svg = fixture.staticChips();
+    assert.match(svg, /class="vellum-chip-group"/);
+    assert.match(svg, /class="vellum-chip-toggle"/);
+    assert.doesNotMatch(svg, /tabindex|role="radio"|role="switch"/);
+  });
+
+  it("makes live chips a radio group and a switch with their states", () => {
+    const svg = fixture.liveChips();
+    assert.match(svg, /role="radiogroup" aria-label="Mode"/);
+    assert.match(svg, /data-value="b" role="radio" aria-checked="true" aria-label="B" tabindex="0"/);
+    assert.match(svg, /data-value="a" role="radio" aria-checked="false" aria-label="A" tabindex="-1"/);
+    assert.match(svg, /role="switch" aria-checked="true" aria-label="Grid"/);
+  });
+
+  it("keeps in-figure parameters interactive without controls below the figure", () => {
+    const { interactive, controls } = JSON.parse(fixture.chippedControls());
+    assert.equal(interactive, true);
+    assert.equal(controls, "");
+  });
+});

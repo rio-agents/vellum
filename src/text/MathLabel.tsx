@@ -1,4 +1,4 @@
-import React, { type CSSProperties, useState, useEffect } from "react";
+import React, { type CSSProperties, useState, useEffect, useMemo } from "react";
 import { resolveTex, loadClientTex } from "./tex-resolver.ts";
 import type { TexSvgResult } from "./tex.ts";
 import { computeBoxOffset, type Anchor } from "./anchor.ts";
@@ -52,6 +52,10 @@ export function MathLabel({
         .catch((err) => console.error(`Failed to load MathJax for tex: "${tex}"`, err));
     }
   }, [tex, display, initialMath]);
+
+  // A new object here on every render makes React rewrite the glyphs each
+  // time, replacing nodes under the pointer and swallowing clicks.
+  const html = useMemo(() => ({ __html: math?.inner ?? "" }), [math?.inner]);
 
   const size = resolveFontSize(sizeRole, "math", theme);
   const toneColor = resolveTone(tone, theme);
@@ -112,7 +116,7 @@ export function MathLabel({
         overflow="visible"
         aria-hidden="true"
         style={{ display: "block" }}
-        dangerouslySetInnerHTML={{ __html: math.inner }}
+        dangerouslySetInnerHTML={html}
       />
     </g>
   );

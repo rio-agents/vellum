@@ -11,6 +11,9 @@ import { DragHandle } from "../../src/controls/DragHandle.tsx";
 import { Probe } from "../../src/controls/Probe.tsx";
 import { SolutionCurve } from "../../src/marks/SolutionCurve.tsx";
 import { Contour, LevelRegion } from "../../src/marks/Contour.tsx";
+import { ChipGroup, ChipToggle } from "../../src/controls/Chips.tsx";
+import { isInteractive } from "../../src/render/assets.ts";
+import { Controls } from "../../src/controls/Controls.tsx";
 
 const rate = (x: number, y: number) => x - y;
 
@@ -68,4 +71,39 @@ export function undeclaredHandle() {
     ),
   });
   return renderToSvgString(figure);
+}
+
+const chipped = defineFigure({
+  id: "chipped",
+  description: "Chips inside a figure",
+  layouts: { wide: { width: 300, height: 60 } },
+  params: {
+    mode: param.choice({ label: "Mode", labelKind: "text", options: [{ value: "a", label: "A" }, { value: "b", label: "B" }], default: "b" }),
+    grid: param.boolean({ label: "Grid", labelKind: "text", default: false }),
+  },
+  controls: { inFigure: ["mode", "grid"] },
+  render: () => (
+    <Figure>
+      <ChipGroup param="mode" x={10} y={10} labels={{ a: { tex: "a" }, b: { text: "b" } }} />
+      <ChipToggle param="grid" x={290} y={10} align="end" />
+    </Figure>
+  ),
+});
+
+export function staticChips() {
+  return renderToSvgString(chipped);
+}
+
+export function liveChips() {
+  return renderToStaticMarkup(
+    renderFigureLayout(chipped, { asset: "chipped", layout: "wide", params: { mode: "b", grid: true }, derived: {}, theme: defaultTheme, set: () => {} })
+  );
+}
+
+/** The chipped figure is interactive, yet draws no controls below itself. */
+export function chippedControls() {
+  return JSON.stringify({
+    interactive: isInteractive(chipped),
+    controls: renderToStaticMarkup(<Controls definition={chipped} params={{ mode: "b", grid: false }} set={() => {}} />),
+  });
 }
