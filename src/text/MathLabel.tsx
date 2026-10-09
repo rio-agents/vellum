@@ -103,7 +103,6 @@ export function MathLabel({
           height={Number((roundedH + pad).toFixed(2))}
           rx={2}
           fill={theme.color.surface}
-          fillOpacity={0.88}
         />
       )}
       <svg

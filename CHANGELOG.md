@@ -8,6 +8,7 @@ Vellum follows semantic versioning. Before 1.0, a breaking change bumps the mino
 - Marks for first-order equations and level sets: `SolutionCurve` (fourth-order Runge–Kutta), `Contour` (marching squares, joined into polylines), and `LevelRegion` (a seamless fill of `fn > level` or `fn < level`), with `scalarSolution`, `contourLines`, and `levelRegionPolygons` in `math`.
 - A technical default look: `Axes` gains `frame` (a closed box with inward ticks); tick labels use the theme's math font with true minus signs; `Grid` lines are solid by default; `SlopeField` marks are lighter so solution curves stand out; ticks are 5 px.
 - `Label` takes `font` (`"sans"`, `"serif"`, or `"math"`).
+- `Grid` lines and the rules of `Axes` (axis lines, ticks, frame) use `shape-rendering: crispEdges`, so they land on whole pixels on 1x screens. A haloed `MathLabel`'s plate is opaque.
 - **Breaking:** themes need `font.math`, a font stack that matches the TeX font.
 - **Breaking:** `DragHandle` takes `param` (the name of a point parameter) instead of `point` and `onChange`, and reads its step from the parameter. A figure with a visible point parameter now counts as interactive.
 - **Breaking:** a haloed `MathLabel` sits on a surface-colored plate instead of an outlined copy of its glyphs. `Axes` defaults to the `faint` tone, and `Grid` to solid lines at opacity 0.6.

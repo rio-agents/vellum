@@ -37,6 +37,9 @@ export function withMinusSign(text: string): string {
   return text.replace(/^-(?=[\d.])/, "−");
 }
 
+// Axis lines, ticks, and the frame are horizontal or vertical, so they are drawn
+// with crisp edges: on a 1x screen they land on whole pixels instead of blurring
+// across two. Only the rules get this; it would make text and math jagged.
 export function Axes({
   origin,
   frame: framed = false,
@@ -115,11 +118,12 @@ export function Axes({
           fill="none"
           stroke={strokeColor}
           strokeWidth={strokeWidth}
+          shapeRendering="crispEdges"
         />
       ) : (
         <>
-          <line x1={xStartPx} y1={pxOy} x2={xEndPx} y2={pxOy} stroke={strokeColor} strokeWidth={strokeWidth} />
-          <line x1={pxOx} y1={yStartPx} x2={pxOx} y2={yEndPx} stroke={strokeColor} strokeWidth={strokeWidth} />
+          <line x1={xStartPx} y1={pxOy} x2={xEndPx} y2={pxOy} stroke={strokeColor} strokeWidth={strokeWidth} shapeRendering="crispEdges" />
+          <line x1={pxOx} y1={yStartPx} x2={pxOx} y2={yEndPx} stroke={strokeColor} strokeWidth={strokeWidth} shapeRendering="crispEdges" />
         </>
       )}
 
@@ -128,7 +132,7 @@ export function Axes({
           const [px] = toPx([val, oy]);
           return (
             <g key={`xtick-${val}`}>
-              <line x1={px} y1={pxOy} x2={px} y2={pxOy + xTick} stroke={strokeColor} strokeWidth={strokeWidth} />
+              <line x1={px} y1={pxOy} x2={px} y2={pxOy + xTick} stroke={strokeColor} strokeWidth={strokeWidth} shapeRendering="crispEdges" />
               {showTickLabels && (
                 <Label
                   text={withMinusSign(formatX(val))}
@@ -149,7 +153,7 @@ export function Axes({
           const [, py] = toPx([ox, val]);
           return (
             <g key={`ytick-${val}`}>
-              <line x1={pxOx + yTick} y1={py} x2={pxOx} y2={py} stroke={strokeColor} strokeWidth={strokeWidth} />
+              <line x1={pxOx + yTick} y1={py} x2={pxOx} y2={py} stroke={strokeColor} strokeWidth={strokeWidth} shapeRendering="crispEdges" />
               {showTickLabels && (
                 <Label
                   text={withMinusSign(formatY(val))}

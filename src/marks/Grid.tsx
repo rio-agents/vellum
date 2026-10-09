@@ -38,7 +38,7 @@ export function Grid({
   const [xMaxPx] = toPx([xDomain[1], yDomain[0]]);
 
   return (
-    <g className="vellum-grid" opacity={opacity}>
+    <g className="vellum-grid" opacity={opacity} shapeRendering="crispEdges">
       {xTickVals.map((xVal) => {
         const [px] = toPx([xVal, yDomain[0]]);
         return (
