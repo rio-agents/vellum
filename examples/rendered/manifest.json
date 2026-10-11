@@ -1,4 +1,13 @@
 {
+  "anchored-diagram": {
+    "figure": "anchored-diagram",
+    "source": "examples/anchored-diagram.figure.tsx",
+    "layouts": [
+      "main"
+    ],
+    "interactive": false,
+    "animated": false
+  },
   "block-diagram": {
     "figure": "block-diagram",
     "source": "examples/block-diagram.figure.tsx",

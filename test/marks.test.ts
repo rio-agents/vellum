@@ -109,3 +109,54 @@ describe("Panel clipping", () => {
     assert.deepEqual(used, defined);
   });
 });
+
+describe("Plot axes", () => {
+  it("keeps fractional ticks accurate, including a single tick", () => {
+    assert.deepEqual(JSON.parse(fixture.axesFormatters()), ["0.5", "0.25", "−2", [1]]);
+    assert.throws(fixture.invalidTickBounds, /finite bounds/);
+  });
+  it("omits the vertical arrow, ticks, and name for a one-dimensional domain", () => {
+    const markup = fixture.horizontalOnlyAxes();
+    assert.equal((markup.match(/class="vellum-arrow"/g) ?? []).length, 1);
+    assert.match(markup, /data-label-text="t"/);
+    assert.doesNotMatch(markup, /data-label-text="(?:y|1|2)"/);
+  });
+  it("suppresses a numeric label near a symbolic tick and keeps arrow tips", () => {
+    const markup = fixture.symbolicAxes();
+    assert.match(markup, /data-label-text="b"/);
+    assert.doesNotMatch(markup, /data-label-text="5"/);
+    assert.equal((markup.match(/class="vellum-arrow"/g) ?? []).length, 2);
+  });
+  it("uses lower and left edges when zero lies outside the domains", () => {
+    const markup = fixture.edgeAxes();
+    assert.match(markup, /x1="100" y1="250" x2="500" y2="250"/);
+    assert.match(markup, /x1="100" y1="250" x2="100" y2="50"/);
+  });
+});
+
+describe("Diagram composition", () => {
+  it("names a dashed group and retains its child marks", () => {
+    const markup = fixture.diagramGroup();
+    assert.match(markup, /class="vellum-diagram-group"/);
+    assert.match(markup, /data-label-text="two operations"/);
+    assert.match(markup, /stroke-dasharray=/);
+    assert.match(markup, /class="vellum-diagram-box"/);
+    assert.match(markup, /data-label-text="T"/);
+  });
+  it("keeps diagram coordinates in figure pixels inside a Panel", () => {
+    assert.match(fixture.diagramConnector(), /d="M 10 20 L 90 20 L 90 50"/);
+    assert.match(fixture.boxCoordinates(), /x="20" y="30" width="100" height="60"/);
+  });
+  it("draws cubic connectors and rejects ambiguous routes", () => {
+    assert.match(fixture.diagramCurve(), /d="M 10 20 C 30 20, 90 30, 90 50"/);
+    assert.throws(fixture.invalidConnector, /choose waypoints or curve controls/);
+  });
+  it("places anchors and rows/columns from explicit geometry", () => {
+    assert.throws(fixture.invalidAnchor, /fraction must be between/);
+    assert.deepEqual(JSON.parse(fixture.placements()), {
+      anchor: { x: 120, y: 45 },
+      row: [{ x: 10, y: 20, width: 20, height: 10 }, { x: 35, y: 20, width: 40, height: 15 }],
+      column: [{ x: 10, y: 20, width: 20, height: 10 }, { x: 10, y: 35, width: 40, height: 15 }],
+    });
+  });
+});

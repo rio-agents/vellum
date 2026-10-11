@@ -34,3 +34,9 @@ The first version as a standalone library, extracted from the webnotes figure pa
 - Themes with semantic tones and text roles.
 - Parameters, derived values, and controls, with client hydration through `mountFigure`.
 - `vellum render`, configured per project by `vellum.config.mjs`, with a manifest and integrity checks.
+
+### Figure vocabulary
+
+Added `PlotAxes` with arrow tips and symbolic ticks, `PanelTitle`, axis guides,
+and tick formatting helpers. Added explicit diagram boxes, anchors, connectors,
+groups, and row/column placement, developed against Web Notes' figure ports.

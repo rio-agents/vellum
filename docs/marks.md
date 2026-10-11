@@ -87,3 +87,27 @@ All marks take a `tone` (see [themes](themes.md)). Stroked marks take a `weight`
 - `font` picks the theme font for a `Label`: `"sans"` (the default), `"serif"`, or `"math"`, the face that matches TeX. Use `"math"` for numbers and short symbolic labels set beside mathematics; it also uses tabular numerals.
 - `MathLabel` renders TeX with MathJax into SVG paths when the figure is rendered, so the SVG needs no math fonts. `display` switches to display-style math.
 - `InlineTex` renders TeX for HTML around a figure, such as control labels.
+
+## Arrow axes and diagram composition
+
+`PlotAxes` draws two arrow axes through zero, or along the lower and left edges
+when zero lies outside the domains. Supply TeX `xName` and `yName`, a few round
+`xTicks` and `yTicks`, and optional symbolic `xMarks`/`yMarks` (`{ at, tex, tone? }`).
+A symbol suppresses a nearby numeric tick label. Draw axes in an unclipped Panel
+over clipped marks. `DropLine` and `AcrossLine` connect a data point to the axes;
+`PanelTitle` places a TeX title at pixel `x`, `y`, aligned at its lower left.
+`niceTicks`, `tickText`, and `fmt` supply round ticks and true minus signs.
+
+Diagrams use figure pixels throughout, even inside a Panel:
+
+- `DiagramBox` takes `x`, `y`, `width`, `height`, a text `label`, and optional `tex`.
+- `boxAnchor(box, side, fraction?)` returns a pixel point `{ x, y }` on the top,
+  right, bottom, or left side; the fraction runs from 0 to 1.
+- `Connector` joins pixel `from` and `to` points. Supply `via` for explicit elbows
+  or two `controls` for a cubic curve. It has an arrow tip by default.
+- `DiagramGroup` draws an explicit dashed boundary with a text name above it.
+- `diagramRow` and `diagramColumn` place a list of known box sizes from pixel
+  `x`, `y`, with a chosen gap. They do not choose a graph layout.
+
+Colors, strokes, and label sizes come from the theme. Choose the boxes' sizes,
+connector routes, and phone composition in the definition.

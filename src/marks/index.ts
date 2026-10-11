@@ -20,3 +20,6 @@ export * from "./Region.tsx";
 export * from "./Legend.tsx";
 export * from "./Callout.tsx";
 export * from "./Table.tsx";
+export * from "./PlotAxes.tsx";
+
+export * from "./Diagram.tsx";
