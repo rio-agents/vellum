@@ -4,6 +4,8 @@ Vellum follows semantic versioning. Before 1.0, a breaking change bumps the mino
 
 ## 0.2.0 (unreleased)
 
+- `description` may be a function of the parameters, so each variant (or parameter setting) gets its own accessible name and `<title>`. `figureDescription(definition, params)` resolves it.
+
 - Point parameters are interactive. `DragHandle` binds to a declared `param.point` by name and moves it by pointer and keyboard within its bounds; `Probe` sets a point by pressing anywhere in a panel and reports the hovered position for readouts; `useParam` gives custom marks the same access. Static renders stay free of client behavior.
 - Marks for first-order equations and level sets: `SolutionCurve` (fourth-order Runge–Kutta), `Contour` (marching squares, joined into polylines), and `LevelRegion` (a seamless fill of `fn > level` or `fn < level`), with `scalarSolution`, `contourLines`, and `levelRegionPolygons` in `math`.
 - A technical default look: `Axes` gains `frame` (a closed box with inward ticks); tick labels use the theme's math font with true minus signs; `Grid` lines are solid by default; `SlopeField` marks are lighter so solution curves stand out; ticks are 5 px.

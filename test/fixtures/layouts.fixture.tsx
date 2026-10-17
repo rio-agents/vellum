@@ -30,3 +30,16 @@ export const staged = defineFigure({
 });
 
 export const render = (options: Parameters<typeof renderToSvgString>[1]) => renderToSvgString(staged, options);
+
+/** A staged definition whose description depends on its parameters. */
+export const described = defineFigure({
+  id: "described-demo",
+  description: ({ stage }) => `The demo at stage ${stage}.`,
+  layouts: { wide: { width: 200, height: 100 } },
+  params: { stage: param.number({ default: 1, min: 1, max: 3, step: 1, hidden: true }) },
+  variants: { "stage-1": { stage: 1 }, "stage-3": { stage: 3 } },
+  render: () => <Figure>{null}</Figure>,
+});
+
+export const renderDescribed = (options: Parameters<typeof renderToSvgString>[1]) =>
+  renderToSvgString(described, options);

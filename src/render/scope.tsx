@@ -1,7 +1,7 @@
 import React, { type ReactElement } from "react";
 import { ThemeProvider } from "../theme/index.ts";
 import type { FigureTheme } from "../theme/types.ts";
-import type { FigureDefinition, FigureSize } from "../define.ts";
+import { figureDescription, type FigureDefinition, type FigureSize } from "../define.ts";
 import { FigureScopeContext } from "../scene/Figure.tsx";
 import { declaredLayouts, figureSvgId } from "./assets.ts";
 import { figureTime } from "../animate/time.ts";
@@ -32,7 +32,7 @@ export function renderFigureLayout(
         id: figureSvgId(asset, layout, declaredLayouts(definition)[0] === layout),
         layout,
         size,
-        description: accessibleName ?? definition.description,
+        description: accessibleName ?? figureDescription(definition, params),
       }}
     >
       <ThemeProvider theme={theme}>

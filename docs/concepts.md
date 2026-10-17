@@ -71,6 +71,12 @@ variants: { "step-1": { step: 1 }, "step-3": { step: 3 } },
 
 This is the way to draw a staged family (the same picture at several stages) from one definition. A variant may set only declared parameters, and only to values the sanitizer would keep unchanged; `{ step: 5 }` above is an error, not a silent clamp to 3. A definition with variants has no bare `<id>` asset. [examples/staged-descent.figure.tsx](../examples/staged-descent.figure.tsx) is a worked example.
 
+When the variants show different things, give `description` as a function of the parameters, so each asset gets its own accessible name and `<title>`:
+
+```tsx
+description: ({ step }) => `Gradient descent after ${step} steps.`,
+```
+
 ## What Vellum leaves to a project
 
 Vellum does not decide:

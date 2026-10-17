@@ -9,6 +9,7 @@ type LayoutsFixture = {
   staged: Parameters<typeof planFigureAssets>[0];
   seen: { layout: string; width: number; stage: number }[];
   render: (options: Record<string, unknown>) => string;
+  renderDescribed: (options: Record<string, unknown>) => string;
 };
 let fixture: LayoutsFixture;
 
@@ -94,5 +95,13 @@ describe("Layout rendering", () => {
     assert.match(compact, /marker-end="url\(#staged-demo--stage-1--compact-arrow-accent\)"/);
     const refs = [...compact.matchAll(/url\(#([^)]+)\)/g)].map((m) => m[1]);
     for (const ref of refs) assert.ok(ids.includes(ref), `reference ${ref} resolves inside this SVG`);
+  });
+
+  it("names each variant with a description computed from its parameters", () => {
+    const first = fixture.renderDescribed({ asset: "described-demo--stage-1", params: { stage: 1 } });
+    const third = fixture.renderDescribed({ asset: "described-demo--stage-3", params: { stage: 3 } });
+    assert.match(first, /aria-label="The demo at stage 1\."/);
+    assert.match(first, /<title>The demo at stage 1\.<\/title>/);
+    assert.match(third, /aria-label="The demo at stage 3\."/);
   });
 });

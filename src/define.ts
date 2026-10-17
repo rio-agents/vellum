@@ -42,7 +42,11 @@ export interface FigureDefinition<
   L extends string = string
 > {
   id: string;
-  description: string;
+  /**
+   * The SVG's accessible name and `<title>`. A function of the parameters lets
+   * each variant, or each parameter setting, describe what it draws.
+   */
+  description: string | ((params: InferParamsValues<P>) => string);
   /**
    * Named compositions of the figure, each drawn by `render` at its own size, for
    * example `{ wide: {...}, compact: {...} }`. The first declared layout is the
@@ -67,4 +71,12 @@ export function defineFigure<
 >(def: FigureDefinition<P, D, L>): FigureDefinition<P, D, L> {
   timeParameter(def.params);
   return def;
+}
+
+/** The definition's description for one parameter setting. */
+export function figureDescription(
+  definition: FigureDefinition<any, any, any>,
+  params: Record<string, unknown>
+): string {
+  return typeof definition.description === "function" ? definition.description(params) : definition.description;
 }
