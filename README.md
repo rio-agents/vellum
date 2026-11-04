@@ -70,3 +70,7 @@ Agents should start with [AGENTS.md](AGENTS.md).
 Node 22 or later and React 19. Vellum ships TypeScript source. Bundlers such as Vite and esbuild compile it directly. The `vellum` command runs the source through Node's type stripping.
 
 Vellum is before 1.0. Breaking changes bump the minor version and are listed in the [changelog](CHANGELOG.md).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "Mathematical and technical figures as SVG, drawn with React.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "repository": "github:rio-agents/vellum",
   "engines": {
