@@ -38,13 +38,13 @@ describe("Axes labels inside a panel", () => {
 
 describe("Label halos", () => {
   it("outlines a text label in the surface color behind its fill", () => {
-    assert.match(fixture.haloText(), /data-label-text="halo"[^>]*stroke="#ffffff"[^>]*stroke-width="6"[^>]*paint-order="stroke"/);
+    assert.match(fixture.haloText(), /data-label-text="halo"[^>]*stroke="#fffdf8"[^>]*stroke-width="6"[^>]*paint-order="stroke"/);
   });
 
   it("draws a surface-colored plate under a math label", () => {
     const markup = fixture.haloMath();
     assert.equal((markup.match(/<svg width/g) ?? []).length, 1, "the label itself, once");
-    assert.match(markup, /<rect class="vellum-math-halo"[^>]*fill="#ffffff"/);
+    assert.match(markup, /<rect class="vellum-math-halo"[^>]*fill="#fffdf8"/);
     assert.doesNotMatch(fixture.plainMath(), /vellum-math-halo/);
   });
 });

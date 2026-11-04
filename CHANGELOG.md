@@ -20,6 +20,8 @@ Vellum follows semantic versioning. Before 1.0, a breaking change bumps the mino
 - Number, point, and matrix interpolation, easing, and bounded stage progress.
 - Explicit 2D point, vector, and sampled-geometry transforms, including singular maps.
 - A flattening-grid reference figure with responsive layouts and exact-collapse states.
+- The default theme has an earthy palette on cream paper: warm ink, a sage accent, and slate, brick, olive, ochre, umber, and sea-sage series. Figures rendered without a configured theme change color; the fonts and sizes are unchanged.
+- A two-panel explanatory example, `streaming-memory`: a layered diagram of why streaming saves memory and a log-scale chart of illustrative gains, with its own marks and its own typography supplied through `ThemeProvider`.
 - Embedding pages can preserve their accessible figure names through hydration; mounted instances have independent SVG IDs.
 - **Breaking:** time parameters require a positive finite `duration`. Removed the unused `player` configuration and server `time` override. Set the declared time parameter through `params`; render context `time` is that same sanitized value.
 - **Breaking:** `affine2(points, matrix)` applies the supplied matrix literally. Covariance inputs must use `{ cov: matrix }`; no matrix-shape guessing remains. Point-only figures are not marked interactive until point controls are implemented.

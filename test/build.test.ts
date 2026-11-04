@@ -106,7 +106,7 @@ describe("Rendering a project", () => {
     assert.match(bars.files.get("demo-bars.svg")!, /viewBox="0 0 400 200"[^>]*data-layout="page"/);
     assert.match(bars.files.get("demo-bars.slide.svg")!, /viewBox="0 0 960 540"[^>]*data-layout="slide"/);
     // Without a configured theme, colors come from the library's theme.
-    assert.match(bars.files.get("demo-bars.svg")!, /fill="#1c1b18"/);
+    assert.match(bars.files.get("demo-bars.svg")!, /fill="#211a12"/);
   });
 
   it("renders one asset per variant with the variant's parameters", async () => {

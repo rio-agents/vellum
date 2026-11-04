@@ -14,7 +14,7 @@ A `FigureTheme` has these parts:
 
 | Part | Holds | Default |
 |---|---|---|
-| `color` | one value per tone, with `series` as an array of six | a warm light palette |
+| `color` | one value per tone, with `series` as an array of six | an earthy palette on cream paper: sage accent; slate, brick, olive, ochre, umber, and sea-sage series |
 | `font` | `sans`, `serif`, and `math` font stacks; `math` sets numbers and short labels beside TeX, so it should match the TeX font | system sans, Source Serif 4, Latin Modern Roman |
 | `text` | a size in SVG units for each role: `title`, `label`, `tick`, `caption`, `math`, `symbol` | 15, 13, 11, 12, 13.5, 30 |
 | `stroke` | the widths of `hairline`, `regular`, and `bold` | 1, 1.5, 2.5 |
@@ -39,4 +39,4 @@ export const printTheme: FigureTheme = {
 
 Name it in `vellum.config.mjs` as `theme: { module: "figures/print-theme.ts", export: "printTheme" }`, or pass it to `renderToSvgString` and `mountFigure`.
 
-A theme's values are written into the SVG as they are, so they can be CSS expressions. A web page can use variables with fallbacks, such as `var(--color-text, #1c1b18)`, so the figure follows the page's light and dark themes.
+A theme's values are written into the SVG as they are, so they can be CSS expressions. A web page can use variables with fallbacks, such as `var(--color-text, #211a12)`, so the figure follows the page's light and dark themes.

@@ -1,22 +1,24 @@
 import type { FigureTheme } from "./types.ts";
 
 export const defaultTheme: FigureTheme = {
+  // An earthy palette on cream paper. Series, in order: slate, brick, olive,
+  // ochre, umber, sea sage.
   color: {
-    ink: "#1c1b18",
-    muted: "#68665e",
-    faint: "#9a978d",
-    accent: "#9a5436",
-    accentSubtle: "#f4ece6",
-    surface: "#ffffff",
-    background: "#fafaf7",
-    border: "#deded6",
+    ink: "#211a12",
+    muted: "#6f6457",
+    faint: "#958979",
+    accent: "#687b57",
+    accentSubtle: "#eef0e8",
+    surface: "#fffdf8",
+    background: "#f6f0e6",
+    border: "#ded5c5",
     series: [
-      "#2f6fb0",
-      "#c0602f",
-      "#00897b",
-      "#b88a1a",
-      "#9a4f9c",
-      "#3f7a26",
+      "#3d6a8a",
+      "#a84a32",
+      "#6b7a2c",
+      "#b07f1f",
+      "#7a5a3a",
+      "#49755f",
     ],
   },
   font: {

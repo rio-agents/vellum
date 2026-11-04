@@ -8,6 +8,8 @@ It is written to be used by people and by coding agents. The core knows nothing 
 |---|---|---|
 | ![A density with a shaded interval](examples/rendered/function-plot.svg) | ![A block diagram](examples/rendered/block-diagram.svg) | ![A stem plot drawn by a custom mark](examples/rendered/custom-mark.svg) |
 
+![A two-panel figure: a diagram of why streaming saves memory, and a log-scale chart of illustrative gains](examples/rendered/streaming-memory.svg)
+
 ## A first figure
 
 A definition lives in a file named after its id, `<id>.figure.tsx`:
