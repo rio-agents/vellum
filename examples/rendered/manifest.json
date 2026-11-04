@@ -81,14 +81,5 @@
     ],
     "interactive": false,
     "animated": false
-  },
-  "streaming-memory": {
-    "figure": "streaming-memory",
-    "source": "examples/streaming-memory.figure.tsx",
-    "layouts": [
-      "main"
-    ],
-    "interactive": false,
-    "animated": false
   }
 }
